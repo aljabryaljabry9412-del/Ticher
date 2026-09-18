@@ -66,13 +66,13 @@ td input{width:48px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 2px;t
 </header>
 <div class="wrap">
 <div class="tabs no-print">
-<button data-tab="home" class="active">الرئيسية</button>
-<button data-tab="students">أسماء الطلاب</button>
-<button data-tab="daily">الاختبار اليومي</button>
-<button data-tab="attendance">سجل الحضور</button>
-<button data-tab="absence">سجل الغياب</button>
-<button data-tab="backup">النسخ الاحتياطي</button>
-<button data-tab="cloud">الخزن السحابي</button>
+<button data-tab="home" class="active" onclick="showTab('home')">الرئيسية</button>
+<button data-tab="students" onclick="showTab('students')">أسماء الطلاب</button>
+<button data-tab="daily" onclick="showTab('daily')">الاختبار اليومي</button>
+<button data-tab="attendance" onclick="showTab('attendance')">سجل الحضور</button>
+<button data-tab="absence" onclick="showTab('absence')">سجل الغياب</button>
+<button data-tab="backup" onclick="showTab('backup')">النسخ الاحتياطي</button>
+<button data-tab="cloud" onclick="showTab('cloud')">الخزن السحابي</button>
 </div>
 
 <section id="home" class="tab">
@@ -247,10 +247,6 @@ function init(){
   resetDaily();
   updateHeader();
   autoCheckCloudSync();
-  
-  document.querySelectorAll(".tabs button[data-tab]").forEach(b=>{
-    b.addEventListener("click",function(e){e.preventDefault();showTab(this.getAttribute("data-tab"));});
-  });
 }
 
 function showTab(id){
