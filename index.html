@@ -28,6 +28,8 @@ header h1{font-family:NaskhLocal,"Noto Naskh Arabic",serif;font-size:34px;margin
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.field label{display:block;font-weight:bold;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #94a3b8;border-radius:99px;background:white;font-size:16px}
 button,.btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:bold}.primary{background:var(--blue);color:#fff}.danger{background:#fee2e2;color:#991b1b}.secondary{background:#e2e8f0}.success{background:#dcfce7;color:#166534}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.muted{color:#64748b}.section-title{font-size:21px;margin:0 0 12px}.hidden{display:none!important}
+.header-action-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.header-action-row .section-title{margin:0}
+.action-select{padding:6px 12px;border:1px solid var(--blue);border-radius:8px;background:#eff6ff;color:var(--blue);font-weight:bold;font-size:14px;cursor:pointer;outline:none}
 .stage-tabs,.class-tabs{display:flex;gap:7px;flex-wrap:wrap}.stage-item,.class-item{display:flex;gap:3px;align-items:center}.stage-item button:first-child,.class-item button:first-child{background:#dbeafe;color:#1e3a8a}
 .table-wrap{overflow:auto;max-height:65vh;border:1px solid var(--line);border-radius:12px;background:white}
 table{border-collapse:separate;border-spacing:0;min-width:1750px;width:max-content}th,td{border-left:1px solid var(--line);border-bottom:1px solid var(--line);padding:4px;text-align:center;white-space:nowrap;background:white}th{background:#e2e8f0;font-weight:bold;position:sticky;top:0;z-index:4}
@@ -39,7 +41,7 @@ td input{width:48px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 2px;t
 .report-list{padding:0;list-style:none}.report-list li{padding:7px 10px;border-radius:7px;margin:3px 0}.report-present li{background:#dcfce7;color:#166534}.report-absent li{background:#fee2e2;color:#991b1b}
 .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}.photo-grid img{width:100%;height:130px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
 .modal{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}.modal>div{background:white;border-radius:16px;padding:20px;max-width:850px;width:100%;max-height:90vh;overflow:auto}
-.search-card .student-search-row{display:flex;gap:8px;align-items:center}.student-search-row input{flex:1;min-width:0;padding:11px 12px;border:1px solid #94a3b8;border-radius:9px;background:white;font-size:16px}.student-search-results{margin-top:14px}.search-result{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px;background:#f8fafc}.search-result h3{margin:0 0 8px;color:var(--navy)}.search-meta{color:#64748b;font-size:14px;margin-bottom:10px}.search-grades{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:7px}.search-grade{background:white;border:1px solid #e2e8f0;border-radius:8px;padding:7px;text-align:center}.search-grade b{display:block;font-size:13px;color:#475569;margin-bottom:3px}.search-notes{margin-top:10px;padding:9px;background:#fff;border-radius:8px;border-right:4px solid var(--blue);white-space:pre-wrap}.search-empty{padding:12px;border-radius:10px;background:#fee2e2;color:#991b1b;font-weight:bold}
+.search-card .student-search-row{display:flex;gap:8px;align-items:center}.student-search-row input{flex:1;min-width:0;padding:11px 12px;border:1px solid #94a3b8;border-radius:99px;background:white;font-size:16px}.student-search-results{margin-top:14px}.search-result{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px;background:#f8fafc}.search-result h3{margin:0 0 8px;color:var(--navy)}.search-meta{color:#64748b;font-size:14px;margin-bottom:10px}.search-grades{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:7px}.search-grade{background:white;border:1px solid #e2e8f0;border-radius:8px;padding:7px;text-align:center}.search-grade b{display:block;font-size:13px;color:#475569;margin-bottom:3px}.search-notes{margin-top:10px;padding:9px;background:#fff;border-radius:8px;border-right:4px solid var(--blue);white-space:pre-wrap}.search-empty{padding:12px;border-radius:10px;background:#fee2e2;color:#991b1b;font-weight:bold}
 .print-area{display:none}
 @media print{body{background:white}.no-print,header,.tabs,.actions,.card:not(.print-card){display:none!important}.print-area{display:block!important}.print-card{display:block!important;border:0;box-shadow:none;padding:0}table{min-width:0;width:100%;font-size:9px}th,td{padding:3px}.table-wrap{overflow:visible;max-height:none;border:0}}
 @media(max-width:700px){header h1{font-size:27px}.wrap{padding:10px}.card{padding:12px}.sticky-seq{width:28px!important;min-width:28px!important;max-width:28px!important}.sticky-name{min-width:135px;right:28px}.name-input{width:125px!important}}
@@ -56,8 +58,36 @@ td input{width:48px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 2px;t
 <div class="field"><label>اسم المدرسة</label><input id="school"></div><div class="field"><label>اسم المدرس</label><input id="teacher"></div><div class="field"><label>اسم المادة</label><input id="subject"></div>
 </div><div class="actions"><button class="primary" onclick="saveMeta()">حفظ البيانات</button></div></div>
 <div class="card search-card"><h2 class="section-title">البحث عن طالب</h2><div class="student-search-row"><input id="studentSearchInput" type="search" placeholder="اكتب اسم الطالب" autocomplete="off" onkeydown="if(event.key==='Enter')searchStudent()"><button class="primary" onclick="searchStudent()">بحث</button></div><div id="studentSearchResults" class="student-search-results hidden"></div></div>
-<div class="card"><h2 class="section-title">المراحل الدراسية</h2><div id="stageTabs" class="stage-tabs"></div><div class="actions"><button class="primary" onclick="addStage()">+ إضافة مرحلة</button><button class="secondary" onclick="renameCurrentStage()">تعديل المرحلة</button><button class="danger" onclick="deleteCurrentStage()">حذف المرحلة</button></div></div>
-<div class="card" id="stageCard"><h2 class="section-title">الشعب في المرحلة: <span id="stageTitle"></span></h2><div id="classTabs" class="class-tabs"></div><div class="actions"><button class="primary" onclick="addClass()">+ إضافة شعبة</button><button class="secondary" onclick="renameCurrentClass()">تعديل الشعبة</button><button class="danger" onclick="deleteCurrentClass()">حذف الشعبة</button></div><p class="muted">الشعبة اختيارية؛ يمكنك إبقاؤها باسم افتراضي أو تعديلها.</p></div>
+
+<!-- قسم المراحل الدراسية مع القائمة المنسدلة الخيارات -->
+<div class="card">
+  <div class="header-action-row">
+    <h2 class="section-title">المراحل الدراسية</h2>
+    <select class="action-select" onchange="handleStageAction(this)">
+      <option value="" selected disabled>⚙️ خيارات المرحلة</option>
+      <option value="add">+ إضافة مرحلة جديد</option>
+      <option value="rename">✏️ تعديل المرحلة الحالية</option>
+      <option value="delete">🗑️ حذف المرحلة الحالية</option>
+    </select>
+  </div>
+  <div id="stageTabs" class="stage-tabs"></div>
+</div>
+
+<!-- قسم الشعب الدراسية مع القائمة المنسدلة الخيارات -->
+<div class="card" id="stageCard">
+  <div class="header-action-row">
+    <h2 class="section-title">الشعب في المرحلة: <span id="stageTitle"></span></h2>
+    <select class="action-select" onchange="handleClassAction(this)">
+      <option value="" selected disabled>⚙️ خيارات الشعبة</option>
+      <option value="add">+ إضافة شعبة جديدة</option>
+      <option value="rename">✏️ تعديل الشعبة الحالية</option>
+      <option value="delete">🗑️ حذف الشعبة الحالية</option>
+    </select>
+  </div>
+  <div id="classTabs" class="class-tabs"></div>
+  <p class="muted" style="margin-top:10px;">الشعبة اختيارية؛ يمكنك إبقاؤها باسم افتراضي أو تعديلها.</p>
+</div>
+
 </section>
 <section id="students" class="tab hidden"><div class="card"><div class="actions no-print"><button class="primary" onclick="addStudent()">+ إضافة طالب</button><button class="secondary" onclick="importStudents()">استيراد أسماء من TXT / DOC / DOCX</button><input id="studentFile" type="file" accept=".txt,.doc,.docx" class="hidden" onchange="readStudentFile(this)"><button class="secondary" onclick="printGrades('all')">طباعة جميع الأعمدة</button><button class="secondary" onclick="printGrades('summary')">طباعة المعدلات فقط</button><button class="secondary" onclick="openPrintColumns()">تخصيص الطباعة</button></div><div id="studentsTitle" class="muted"></div><div class="table-wrap" id="gradeWrap"></div></div></section>
 <section id="daily" class="tab hidden"><div class="card daily-box"><h2 class="section-title">الاختبار اليومي</h2><div id="dailyStatus" class="muted"></div><div class="progress"><div id="dailyProgress" style="width:0%"></div></div><div id="dailyName" class="daily-name">—</div><input id="dailyGrade" class="daily-grade" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="0 - 100"><div class="actions" style="justify-content:center"><button class="primary" onclick="saveDailyGrade()">حفظ والانتقال للاسم التالي</button><button class="secondary" onclick="nextDailyOnly()">الاسم التالي</button></div></div></section>
@@ -80,6 +110,23 @@ function showTab(id){const target=document.getElementById(id);if(!target)return;
 function renderStages(){let el=document.getElementById("stageTabs");el.innerHTML=db.stages.map((s,i)=>`<span class="stage-item"><button onclick="selectStage(${i})">${esc(s.name)}</button></span>`).join("");selectStage(Math.min(currentStage,db.stages.length-1))}
 function selectStage(i){currentStage=i;document.getElementById("stageTitle").textContent=currentStageObj().name;let el=document.getElementById("classTabs");el.innerHTML=currentStageObj().classes.map((c,j)=>`<span class="class-item"><button onclick="selectClass(${j})">${esc(c.name)}</button></span>`).join("");selectClass(Math.min(currentClass,currentStageObj().classes.length-1))}
 function selectClass(i){currentClass=i;document.getElementById("stageTitle").textContent=currentStageObj().name;renderStudents();resetDaily()}
+
+function handleStageAction(sel){
+  const val = sel.value;
+  sel.value = "";
+  if(val === "add") addStage();
+  else if(val === "rename") renameCurrentStage();
+  else if(val === "delete") deleteCurrentStage();
+}
+
+function handleClassAction(sel){
+  const val = sel.value;
+  sel.value = "";
+  if(val === "add") addClass();
+  else if(val === "rename") renameCurrentClass();
+  else if(val === "delete") deleteCurrentClass();
+}
+
 let nameModalAction=null;function openNameModal(title,label,value,action){document.getElementById("nameModalTitle").textContent=title;document.getElementById("nameModalLabel").textContent=label;const input=document.getElementById("nameModalInput");input.value=value||"";nameModalAction=action;document.getElementById("nameModal").classList.remove("hidden");setTimeout(()=>{input.focus();input.select()},50)}
 function submitNameModal(){const input=document.getElementById("nameModalInput");const n=input.value.trim();if(!n){alert("يرجى كتابة الاسم.");input.focus();return}const action=nameModalAction;closeModal("nameModal");nameModalAction=null;if(action)action(n)}
 function addStage(){openNameModal("إضافة مرحلة دراسية","اسم المرحلة","المرحلة "+arabicDigits(db.stages.length+1),n=>{db.stages.push(blankStage(n));currentStage=db.stages.length-1;currentClass=0;saveDB();renderStages()})}
