@@ -29,7 +29,7 @@ header h1{font-family:NaskhLocal,"Noto Naskh Arabic",serif;font-size:34px;margin
 button,.btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:bold}.primary{background:var(--blue);color:#fff}.danger{background:#fee2e2;color:#991b1b}.secondary{background:#e2e8f0}.success{background:#dcfce7;color:#166534}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.muted{color:#64748b}.section-title{font-size:21px;margin:0 0 12px}.hidden{display:none!important}
 .header-action-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.header-action-row .section-title{margin:0}
-.action-select{padding:6px 12px;border:1px solid var(--blue);border-radius:8px;background:#eff6ff;color:var(--blue);font-weight:bold;font-size:14px;cursor:pointer;outline:none}
+.action-select{padding:4px 8px;border:1px solid var(--blue);border-radius:8px;background:#eff6ff;color:var(--blue);font-weight:bold;font-size:18px;cursor:pointer;outline:none;text-align:center}
 .stage-tabs,.class-tabs{display:flex;gap:7px;flex-wrap:wrap}.stage-item,.class-item{display:flex;gap:3px;align-items:center}.stage-item button:first-child,.class-item button:first-child{background:#dbeafe;color:#1e3a8a}
 .table-wrap{overflow:auto;max-height:65vh;border:1px solid var(--line);border-radius:12px;background:white}
 table{border-collapse:separate;border-spacing:0;min-width:1750px;width:max-content}th,td{border-left:1px solid var(--line);border-bottom:1px solid var(--line);padding:4px;text-align:center;white-space:nowrap;background:white}th{background:#e2e8f0;font-weight:bold;position:sticky;top:0;z-index:4}
@@ -59,13 +59,13 @@ td input{width:48px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 2px;t
 </div><div class="actions"><button class="primary" onclick="saveMeta()">حفظ البيانات</button></div></div>
 <div class="card search-card"><h2 class="section-title">البحث عن طالب</h2><div class="student-search-row"><input id="studentSearchInput" type="search" placeholder="اكتب اسم الطالب" autocomplete="off" onkeydown="if(event.key==='Enter')searchStudent()"><button class="primary" onclick="searchStudent()">بحث</button></div><div id="studentSearchResults" class="student-search-results hidden"></div></div>
 
-<!-- قسم المراحل الدراسية مع القائمة المنسدلة الخيارات -->
+<!-- قسم المراحل الدراسية -->
 <div class="card">
   <div class="header-action-row">
     <h2 class="section-title">المراحل الدراسية</h2>
     <select class="action-select" onchange="handleStageAction(this)">
-      <option value="" selected disabled>⚙️ خيارات المرحلة</option>
-      <option value="add">+ إضافة مرحلة جديد</option>
+      <option value="" selected disabled>⋮</option>
+      <option value="add">+ إضافة مرحلة جديدة</option>
       <option value="rename">✏️ تعديل المرحلة الحالية</option>
       <option value="delete">🗑️ حذف المرحلة الحالية</option>
     </select>
@@ -73,12 +73,12 @@ td input{width:48px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 2px;t
   <div id="stageTabs" class="stage-tabs"></div>
 </div>
 
-<!-- قسم الشعب الدراسية مع القائمة المنسدلة الخيارات -->
+<!-- قسم الشعب الدراسية -->
 <div class="card" id="stageCard">
   <div class="header-action-row">
     <h2 class="section-title">الشعب في المرحلة: <span id="stageTitle"></span></h2>
     <select class="action-select" onchange="handleClassAction(this)">
-      <option value="" selected disabled>⚙️ خيارات الشعبة</option>
+      <option value="" selected disabled>⋮</option>
       <option value="add">+ إضافة شعبة جديدة</option>
       <option value="rename">✏️ تعديل الشعبة الحالية</option>
       <option value="delete">🗑️ حذف الشعبة الحالية</option>
