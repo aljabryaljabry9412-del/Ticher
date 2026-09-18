@@ -27,7 +27,7 @@ header h1{font-family:NaskhLocal,"Noto Naskh Arabic",serif;font-size:34px;margin
 .school-logo-container img{width:100%;height:100%;object-fit:cover}
 .school-logo-container span{font-size:11px;color:#fff;text-align:center;padding:2px}
 .wrap{max-width:1600px;margin:auto;padding:18px}
-.tabs{display:flex;gap:8px;overflow:auto;padding-bottom:8px}.tabs button{white-space:nowrap;border:0;border-radius:12px;padding:11px 16px;background:#e2e8f0;color:#0f172a;font-weight:bold;cursor:pointer}.tabs button.active{background:var(--navy);color:white}
+.tabs{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding-bottom:8px;-webkit-overflow-scrolling:touch}.tabs button{white-space:nowrap;border:0;border-radius:12px;padding:11px 16px;background:#e2e8f0;color:#0f172a;font-weight:bold;cursor:pointer;user-select:none}.tabs button.active{background:var(--navy);color:white}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 2px 10px #0000000a}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.field label{display:block;font-weight:bold;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #94a3b8;border-radius:99px;background:white;font-size:16px}
 button,.btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:bold}.primary{background:var(--blue);color:#fff}.danger{background:#fee2e2;color:#991b1b}.secondary{background:#e2e8f0}.success{background:#dcfce7;color:#166534}
@@ -35,7 +35,7 @@ button,.btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-we
 .header-action-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.header-action-row .section-title{margin:0}
 .action-select{-webkit-appearance:none;-moz-appearance:none;appearance:none;width:38px!important;min-width:38px!important;height:38px;padding:0;border:1px solid var(--blue);border-radius:8px;background:#eff6ff;color:var(--blue);font-weight:bold;font-size:20px;cursor:pointer;outline:none;text-align:center;text-align-last:center}
 .stage-tabs,.class-tabs{display:flex;gap:7px;flex-wrap:wrap}.stage-item,.class-item{display:flex;gap:3px;align-items:center}
-.stage-item button,.class-item button{background:#e2e8f0;color:#0f172a}
+.stage-item button,.class-item button{background:#e2e8f0;color:#0f172a;cursor:pointer}
 .stage-item.active-stage button,.class-item.active-class button{background:var(--blue)!important;color:white!important}
 .table-wrap{overflow:auto;max-height:65vh;border:1px solid var(--line);border-radius:12px;background:white}
 table{border-collapse:separate;border-spacing:0;min-width:1750px;width:max-content}th,td{border-left:1px solid var(--line);border-bottom:1px solid var(--line);padding:4px;text-align:center;white-space:nowrap;background:white}th{background:#e2e8f0;font-weight:bold;position:sticky;top:0;z-index:4}
@@ -66,13 +66,13 @@ td input{width:48px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 2px;t
 </header>
 <div class="wrap">
 <div class="tabs no-print">
-<button data-tab="home" class="active" onclick="showTab('home')">الرئيسية</button>
-<button data-tab="students" onclick="showTab('students')">أسماء الطلاب</button>
-<button data-tab="daily" onclick="showTab('daily')">الاختبار اليومي</button>
-<button data-tab="attendance" onclick="showTab('attendance')">سجل الحضور</button>
-<button data-tab="absence" onclick="showTab('absence')">سجل الغياب</button>
-<button data-tab="backup" onclick="showTab('backup')">النسخ الاحتياطي</button>
-<button data-tab="cloud" onclick="showTab('cloud')">الخزن السحابي</button>
+<button type="button" data-tab="home" class="active" onclick="showTab('home')">الرئيسية</button>
+<button type="button" data-tab="students" onclick="showTab('students')">أسماء الطلاب</button>
+<button type="button" data-tab="daily" onclick="showTab('daily')">الاختبار اليومي</button>
+<button type="button" data-tab="attendance" onclick="showTab('attendance')">سجل الحضور</button>
+<button type="button" data-tab="absence" onclick="showTab('absence')">سجل الغياب</button>
+<button type="button" data-tab="backup" onclick="showTab('backup')">النسخ الاحتياطي</button>
+<button type="button" data-tab="cloud" onclick="showTab('cloud')">الخزن السحابي</button>
 </div>
 
 <section id="home" class="tab">
@@ -264,8 +264,8 @@ function showTab(id){
   if(id==="cloud")autoCheckCloudSync();
 }
 
-function renderStages(){let el=document.getElementById("stageTabs");el.innerHTML=db.stages.map((s,i)=>`<span class="stage-item ${i===currentStage?'active-stage':''}"><button onclick="selectStage(${i})">${esc(s.name)}</button></span>`).join("");selectStage(Math.min(currentStage,db.stages.length-1))}
-function selectStage(i){currentStage=i;document.querySelectorAll(".stage-item").forEach((el,idx)=>{if(idx===i)el.classList.add("active-stage");else el.classList.remove("active-stage")});document.getElementById("stageTitle").textContent=currentStageObj().name;let el=document.getElementById("classTabs");el.innerHTML=currentStageObj().classes.map((c,j)=>`<span class="class-item ${j===currentClass?'active-class':''}"><button onclick="selectClass(${j})">${esc(c.name)}</button></span>`).join("");selectClass(Math.min(currentClass,currentStageObj().classes.length-1))}
+function renderStages(){let el=document.getElementById("stageTabs");el.innerHTML=db.stages.map((s,i)=>`<span class="stage-item ${i===currentStage?'active-stage':''}"><button type="button" onclick="selectStage(${i})">${esc(s.name)}</button></span>`).join("");selectStage(Math.min(currentStage,db.stages.length-1))}
+function selectStage(i){currentStage=i;document.querySelectorAll(".stage-item").forEach((el,idx)=>{if(idx===i)el.classList.add("active-stage");else el.classList.remove("active-stage")});document.getElementById("stageTitle").textContent=currentStageObj().name;let el=document.getElementById("classTabs");el.innerHTML=currentStageObj().classes.map((c,j)=>`<span class="class-item ${j===currentClass?'active-class':''}"><button type="button" onclick="selectClass(${j})">${esc(c.name)}</button></span>`).join("");selectClass(Math.min(currentClass,currentStageObj().classes.length-1))}
 function selectClass(i){currentClass=i;document.querySelectorAll(".class-item").forEach((el,idx)=>{if(idx===i)el.classList.add("active-class");else el.classList.remove("active-class")});document.getElementById("stageTitle").textContent=currentStageObj().name;renderStudents();resetDaily()}
 
 function handleStageAction(sel){const val=sel.value;sel.value="";if(val==="add")addStage();else if(val==="rename")renameCurrentStage();else if(val==="delete")deleteCurrentStage();}
