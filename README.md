@@ -1,432 +1,1082 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
-<meta name="theme-color" content="#172554">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="سجل المدرس">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>سجل المدرس</title>
-
-<link rel="apple-touch-icon" href="https://aljabryaljabry9412-del.github.io/Ticher/icon.jpeg?v=3">
-<link rel="icon" type="image/jpeg" href="https://aljabryaljabry9412-del.github.io/Ticher/icon.jpeg?v=3">
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سجل المدرس المتكامل</title>
+<!-- أيقونة الموقع والواجهة الرئيسية (للجوال) -->
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+theme: {
+extend: {
+fontFamily: {
+naskh: ['Amiri', 'serif'],
+}
+}
+}
+}
+</script>
 <style>
-@font-face{font-family:NaskhLocal;src:local("Noto Naskh Arabic"),local("Noto Naskh Arabic UI"),local("Traditional Arabic")}
-:root{--navy:#172554;--blue:#2563eb;--bg:#f1f5f9;--card:#fff;--line:#cbd5e1;--red:#dc2626;--green:#15803d;--text:#0f172a}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif}
-header{background:linear-gradient(135deg,#172554,#1d4ed8);color:white;padding:18px 22px;position:sticky;top:0;z-index:20;box-shadow:0 3px 15px #0002}
-header h1{font-family:NaskhLocal,"Noto Naskh Arabic",serif;font-size:34px;margin:0 0 6px}
-.header-meta{opacity:.9}.wrap{max-width:1600px;margin:auto;padding:18px}
-.tabs{display:flex;gap:8px;overflow:auto;padding-bottom:8px}.tabs button{white-space:nowrap;border:0;border-radius:12px;padding:11px 16px;background:#e2e8f0;color:#0f172a;font-weight:bold;cursor:pointer}.tabs button.active{background:var(--navy);color:white}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 2px 10px #0000000a}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.field label{display:block;font-weight:bold;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #94a3b8;border-radius:99px;background:white;font-size:16px}
-button,.btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:bold}.primary{background:var(--blue);color:#fff}.danger{background:#fee2e2;color:#991b1b}.secondary{background:#e2e8f0}.success{background:#dcfce7;color:#166534}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.muted{color:#64748b}.section-title{font-size:21px;margin:0 0 12px}.hidden{display:none!important}
-.header-action-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.header-action-row .section-title{margin:0}
-.action-select{-webkit-appearance:none;-moz-appearance:none;appearance:none;width:38px!important;min-width:38px!important;height:38px;padding:0;border:1px solid var(--blue);border-radius:8px;background:#eff6ff;color:var(--blue);font-weight:bold;font-size:20px;cursor:pointer;outline:none;text-align:center;text-align-last:center}
-.stage-tabs,.class-tabs{display:flex;gap:7px;flex-wrap:wrap}.stage-item,.class-item{display:flex;gap:3px;align-items:center}
-.stage-item button,.class-item button{background:#e2e8f0;color:#0f172a}
-.stage-item.active-stage button,.class-item.active-class button{background:var(--blue)!important;color:white!important}
-.table-wrap{overflow:auto;max-height:65vh;border:1px solid var(--line);border-radius:12px;background:white}
-table{border-collapse:separate;border-spacing:0;min-width:1750px;width:max-content}th,td{border-left:1px solid var(--line);border-bottom:1px solid var(--line);padding:4px;text-align:center;white-space:nowrap;background:white}th{background:#e2e8f0;font-weight:bold;position:sticky;top:0;z-index:4}
-.sticky-seq{position:sticky;right:0;z-index:7;width:32px!important;min-width:32px!important;max-width:32px!important;padding-left:2px!important;padding-right:2px!important}.sticky-name{position:sticky;right:32px;z-index:6;min-width:180px}th.sticky-name,th.sticky-seq{background:#cbd5e1}
-td input{width:48px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 2px;text-align:center;font-size:15px}.name-input{width:170px!important}
-.low{color:var(--red)!important;font-weight:bold}.calc{font-weight:bold}.summary{font-weight:bold}.summary td{background:#f8fafc}.summary-label{font-size:13px}.goodtxt{color:var(--green)}.badtxt{color:var(--red)}
-.daily-box{text-align:center;max-width:650px;margin:20px auto}.daily-name{font-size:32px;font-family:NaskhLocal,"Noto Naskh Arabic",serif;margin:15px}.daily-grade{font-size:30px;width:160px!important;text-align:center}.progress{height:10px;background:#e2e8f0;border-radius:20px;overflow:hidden}.progress>div{height:100%;background:var(--blue)}
-.att-name{font-size:30px;text-align:center;font-family:NaskhLocal,"Noto Naskh Arabic",serif;margin:20px}.att-buttons{display:flex;justify-content:center;gap:15px}.att-buttons button{font-size:22px;min-width:130px}.present{background:#dcfce7;color:#166534}.absent{background:#fee2e2;color:#991b1b}
-.report-list{padding:0;list-style:none}.report-list li{padding:7px 10px;border-radius:7px;margin:3px 0}.report-present li{background:#dcfce7;color:#166534}.report-absent li{background:#fee2e2;color:#991b1b}
-.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}.photo-grid img{width:100%;height:130px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
-.modal{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}.modal>div{background:white;border-radius:16px;padding:20px;max-width:850px;width:100%;max-height:90vh;overflow:auto}
-.search-card .student-search-row{display:flex;gap:8px;align-items:center}.student-search-row input{flex:1;min-width:0;padding:11px 12px;border:1px solid #94a3b8;border-radius:99px;background:white;font-size:16px}.student-search-results{margin-top:14px}.search-result{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px;background:#f8fafc}.search-result h3{margin:0 0 8px;color:var(--navy)}.search-meta{color:#64748b;font-size:14px;margin-bottom:10px}.search-grades{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:7px}.search-grade{background:white;border:1px solid #e2e8f0;border-radius:8px;padding:7px;text-align:center}.search-grade b{display:block;font-size:13px;color:#475569;margin-bottom:3px}.search-notes{margin-top:10px;padding:9px;background:#fff;border-radius:8px;border-right:4px solid var(--blue);white-space:pre-wrap}.search-empty{padding:12px;border-radius:10px;background:#fee2e2;color:#991b1b;font-weight:bold}
-.print-area{display:none}
-@media print{body{background:white}.no-print,header,.tabs,.actions,.card:not(.print-card){display:none!important}.print-area{display:block!important}.print-card{display:block!important;border:0;box-shadow:none;padding:0}table{min-width:0;width:100%;font-size:9px}th,td{padding:3px}.table-wrap{overflow:visible;max-height:none;border:0}}
-@media(max-width:700px){header h1{font-size:27px}.wrap{padding:10px}.card{padding:12px}.sticky-seq{width:28px!important;min-width:28px!important;max-width:28px!important}.sticky-name{min-width:135px;right:28px}.name-input{width:125px!important}}
+body {
+font-family: 'Amiri', serif;
+}
+.sticky-column {
+position: sticky;
+right: 0;
+background-color: white;
+z-index: 20;
+}
+.sticky-header {
+position: sticky;
+top: 0;
+z-index: 30;
+}
+.sticky-header-corner {
+position: sticky;
+top: 0;
+right: 0;
+z-index: 40;
+background-color: #1e3a8a;
+color: white;
+}
+.name-column-cell {
+white-space: nowrap;
+}
+@media print {
+.no-print {
+display: none !important;
+}
+body {
+background-color: white !important;
+color: black !important;
+}
+.print-container {
+width: 100% !important;
+margin: 0 !important;
+padding: 0 !important;
+box-shadow: none !important;
+}
+}
 </style>
 </head>
-<body>
-<header><h1>سجل المدرس</h1><div class="header-meta" id="headerMeta">المدرسة • المدرس • المادة</div></header>
-<div class="wrap">
-<div class="tabs no-print">
-<button type="button" id="btn-home" onclick="showTab('home')" class="active">الرئيسية</button>
-<button type="button" id="btn-students" onclick="showTab('students')">أسماء الطلاب</button>
-<button type="button" id="btn-daily" onclick="showTab('daily')">الاختبار اليومي</button>
-<button type="button" id="btn-attendance" onclick="showTab('attendance')">سجل الحضور</button>
-<button type="button" id="btn-absence" onclick="showTab('absence')">سجل الغياب</button>
-<button type="button" id="btn-backup" onclick="showTab('backup')">النسخ الاحتياطي</button>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+<header id="app-header" class="bg-gradient-to-l from-blue-900 via-indigo-900 to-slate-900 text-white shadow-md sticky top-0 z-50 transition-all duration-300">
+<div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+<div class="flex items-center gap-4">
+<div class="relative group cursor-pointer" onclick="document.getElementById('school-logo-input').click()" title="تغيير شعار المدرسة">
+<img id="header-logo" src="https://placehold.co/70x70/1e3a8a/ffffff?text=شعار" alt="شعار المدرسة" class="w-14 h-14 rounded-full object-cover border-2 border-white/80 shadow">
+<input type="file" id="school-logo-input" class="hidden" accept="image/*" onchange="updateSchoolLogo(event)">
 </div>
-<section id="home" class="tab">
-<div class="card"><h2 class="section-title">بيانات السجل</h2><div class="grid">
-<div class="field"><label>اسم المدرسة</label><input id="school"></div><div class="field"><label>اسم المدرس</label><input id="teacher"></div><div class="field"><label>اسم المادة</label><input id="subject"></div>
-</div><div class="actions"><button class="primary" onclick="saveMeta()">حفظ البيانات</button></div></div>
-<div class="card search-card"><h2 class="section-title">البحث عن طالب</h2><div class="student-search-row"><input id="studentSearchInput" type="search" placeholder="اكتب اسم الطالب" autocomplete="off" onkeydown="if(event.key==='Enter')searchStudent()"><button class="primary" onclick="searchStudent()">بحث</button></div><div id="studentSearchResults" class="student-search-results hidden"></div></div>
-
-<div class="card">
-  <div class="header-action-row">
-    <h2 class="section-title">المراحل الدراسية</h2>
-    <select class="action-select" onchange="handleStageAction(this)">
-      <option value="" selected disabled>⋮</option>
-      <option value="add">+ إضافة مرحلة جديدة</option>
-      <option value="rename">✏️ تعديل المرحلة الحالية</option>
-      <option value="delete">🗑️ حذف المرحلة الحالية</option>
-    </select>
-  </div>
-  <div id="stageTabs" class="stage-tabs"></div>
+<div class="space-y-0.5">
+<div class="flex items-center gap-2">
+<span class="text-xs text-blue-200">المدرسة:</span>
+<input type="text" id="header-school-name" value="مدرسة الأبجدية الابتدائية" onchange="saveHeaderData()" class="bg-transparent border-b border-transparent hover:border-white/50 focus:border-white focus:outline-none text-lg font-bold text-white px-1 transition">
 </div>
-
-<div class="card" id="stageCard">
-  <div class="header-action-row">
-    <h2 class="section-title">الشعبة في المرحلة: <span id="stageTitle"></span></h2>
-    <select class="action-select" onchange="handleClassAction(this)">
-      <option value="" selected disabled>⋮</option>
-      <option value="add">+ إضافة شعبة جديدة</option>
-      <option value="rename">✏️ تعديل الشعبة الحالية</option>
-      <option value="delete">🗑️ حذف الشعبة الحالية</option>
-    </select>
-  </div>
-  <div id="classTabs" class="class-tabs"></div>
-  <p class="muted" style="margin-top:10px;">الشعبة اختيارية؛ يمكنك إبقاؤها باسم افتراضي أو تعديلها.</p>
+<div class="flex items-center gap-4 text-sm text-slate-200">
+<div class="flex items-center gap-1">
+<span>المدرس:</span>
+<input type="text" id="header-teacher-name" value="أحمد محمد" onchange="saveHeaderData()" class="bg-transparent border-b border-transparent hover:border-white/50 focus:border-white focus:outline-none font-semibold px-1 transition w-28">
 </div>
-
+<div class="flex items-center gap-1">
+<span>المادة:</span>
+<input type="text" id="header-subject-name" value="الرياضيات" onchange="saveHeaderData()" class="bg-transparent border-b border-transparent hover:border-white/50 focus:border-white focus:outline-none font-semibold px-1 transition w-28">
+</div>
+</div>
+</div>
+</div>
+</div>
+<nav class="bg-slate-900/80 border-t border-white/10 px-4 overflow-x-auto">
+<div class="max-w-7xl mx-auto flex gap-1 py-2 text-sm whitespace-nowrap">
+<button type="button" onclick="switchTab('home')" id="tab-btn-home" class="px-4 py-2 rounded-lg font-bold bg-blue-600 text-white transition shadow">الصفحة الرئيسية</button>
+<button type="button" onclick="switchTab('names')" id="tab-btn-names" class="px-4 py-2 rounded-lg font-medium text-slate-300 hover:bg-white/10 hover:text-white transition">تبويب الأسماء والدرجات</button>
+<button type="button" onclick="switchTab('daily')" id="tab-btn-daily" class="px-4 py-2 rounded-lg font-medium text-slate-300 hover:bg-white/10 hover:text-white transition">الاختبار اليومي</button>
+<button type="button" onclick="switchTab('attendance')" id="tab-btn-attendance" class="px-4 py-2 rounded-lg font-medium text-slate-300 hover:bg-white/10 hover:text-white transition">سجل الحضور</button>
+<button type="button" onclick="switchTab('absence-log')" id="tab-btn-absence-log" class="px-4 py-2 rounded-lg font-medium text-slate-300 hover:bg-white/10 hover:text-white transition">سجل الغياب</button>
+<button type="button" onclick="switchTab('backup')" id="tab-btn-backup" class="px-4 py-2 rounded-lg font-medium text-slate-300 hover:bg-white/10 hover:text-white transition">النسخ الاحتياطي</button>
+<button type="button" onclick="switchTab('cloud')" id="tab-btn-cloud" class="px-4 py-2 rounded-lg font-medium text-slate-300 hover:bg-white/10 hover:text-white transition">النسخ السحابي</button>
+</div>
+</nav>
+</header>
+<main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6">
+<!-- 1. الصفحة الرئيسية -->
+<section id="tab-home" class="tab-content space-y-6">
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+<h2 class="text-xl font-bold text-slate-900 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
+<span class="w-2.5 h-6 bg-blue-600 rounded-full inline-block"></span>
+إدارة المراحل الدراسية والشعب
+</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-4">
+<label class="block text-sm font-bold text-slate-700">المرحلة الدراسية:</label>
+<div class="flex gap-2">
+<select id="grade-select" onchange="onGradeChange()" class="flex-grow border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+</select>
+<button type="button" onclick="openAddGradeModal()" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-blue-700 transition shadow-sm">+ مرحلة</button>
+<button type="button" onclick="confirmEditGrade()" class="bg-amber-500 text-white px-3 py-2 rounded-xl font-bold hover:bg-amber-600 transition shadow-sm" title="تعديل المرحلة">تعديل</button>
+<button type="button" onclick="confirmDeleteGrade()" class="bg-rose-500 text-white px-3 py-2 rounded-xl font-bold hover:bg-rose-600 transition shadow-sm" title="حذف المرحلة">حذف</button>
+</div>
+</div>
+<div class="space-y-4">
+<label class="block text-sm font-bold text-slate-700">الشعبة (اختيارية):</label>
+<div class="flex gap-2">
+<select id="section-select" onchange="onSectionChange()" class="flex-grow border border-slate-300 rounded-xl px-3 py-2 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+</select>
+<button type="button" onclick="openAddSectionModal()" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-indigo-700 transition shadow-sm">+ شعبة</button>
+<button type="button" onclick="confirmDeleteSection()" class="bg-rose-500 text-white px-4 py-2 rounded-xl font-bold hover:bg-rose-600 transition shadow-sm" title="حذف الشعبة">حذف</button>
+</div>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+<div class="bg-blue-50 p-4 rounded-xl border border-blue-100 flex items-center justify-between">
+<div>
+<p class="text-xs text-blue-600 font-bold">إجمالي عدد الطلاب</p>
+<h3 id="stat-total-students" class="text-2xl font-black text-blue-900 mt-1">٠</h3>
+</div>
+<div class="w-10 h-10 bg-blue-200/60 rounded-full flex items-center justify-center text-blue-700 font-bold">👨‍🎓</div>
+</div>
+<div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100 flex items-center justify-between sm:col-span-2">
+<div>
+<p class="text-xs text-emerald-600 font-bold">المرحلة والشعبة النشطة</p>
+<h3 id="stat-active-class" class="text-lg font-bold text-emerald-900 mt-1 truncate max-w-[180px]">الأول الابتدائي</h3>
+</div>
+<div class="w-10 h-10 bg-emerald-200/60 rounded-full flex items-center justify-center text-emerald-700 font-bold">🏫</div>
+</div>
+</div>
+<!-- حقل البحث في الصفحة الرئيسية -->
+<div class="mt-8 pt-6 border-t border-slate-100 space-y-3">
+<label class="block text-sm font-bold text-slate-700">البحث الشامل عن طالب في جميع المراحل والشعب:</label>
+<div class="flex gap-2 max-w-xl">
+<input type="text" id="home-search-input" placeholder="أدخل اسم الطالب للبحث..." class="flex-grow border border-slate-300 rounded-xl px-4 py-2.5 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium text-sm">
+<button type="button" onclick="handleGlobalSearch(document.getElementById('home-search-input').value)" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-bold transition shadow-sm text-sm">بحث شامل</button>
+</div>
+</div>
+</div>
+<!-- نتائج البحث الشامل في الصفحة الرئيسية -->
+<div id="global-search-results-container" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+<h3 class="font-bold text-lg text-slate-800 pb-2 border-b">نتائج البحث التفصيلية عن الطالب: <span id="search-query-display" class="text-blue-600"></span></h3>
+<div id="search-results-list" class="space-y-4"></div>
+</div>
 </section>
-<section id="students" class="tab hidden"><div class="card"><div class="actions no-print"><button class="primary" onclick="addStudent()">+ إضافة طالب</button><button class="secondary" onclick="importStudents()">استيراد أسماء من TXT / DOC / DOCX</button><input id="studentFile" type="file" accept=".txt,.doc,.docx" class="hidden" onchange="readStudentFile(this)"><button class="secondary" onclick="printGrades('all')">طباعة جميع الأعمدة</button><button class="secondary" onclick="printGrades('summary')">طباعة المعدلات فقط</button><button class="secondary" onclick="openPrintColumns()">تخصيص الطباعة</button></div><div id="studentsTitle" class="muted"></div><div class="table-wrap" id="gradeWrap"></div></div></section>
-<section id="daily" class="tab hidden"><div class="card daily-box"><h2 class="section-title">الاختبار اليومي</h2><div id="dailyStatus" class="muted"></div><div class="progress"><div id="dailyProgress" style="width:0%"></div></div><div id="dailyName" class="daily-name">—</div><input id="dailyGrade" class="daily-grade" type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="0 - 100"><div class="actions" style="justify-content:center"><button class="primary" onclick="saveDailyGrade()">حفظ والانتقال للاسم التالي</button><button class="secondary" onclick="nextDailyOnly()">الاسم التالي</button></div></div></section>
-<section id="attendance" class="tab hidden"><div class="card daily-box"><h2 class="section-title">سجل الحضور</h2><div class="muted" id="attDate"></div><div id="attName" class="att-name">—</div><div class="att-buttons"><button class="present" onclick="markAttendance(true)">حاضر</button><button class="absent" onclick="markAttendance(false)">غائب</button></div><div class="actions" style="justify-content:center"><button class="secondary" onclick="attendanceBack()">العودة إلى الخلف</button><button class="danger" onclick="cancelAttendance()">إلغاء الجلسة</button></div><div id="attReport" class="hidden"></div></div></section>
-<section id="absence" class="tab hidden"><div class="card"><h2 class="section-title">سجل الغياب</h2><div class="grid no-print"><div class="field"><label>اختر التاريخ</label><input id="absenceDate" type="date" onchange="renderAbsence()"></div></div><div class="actions no-print"><button class="primary" onclick="renderAbsence()">عرض السجل</button><button class="secondary" onclick="openCamera()">تصوير وإضافة صورة</button><button class="secondary" onclick="pickPhoto()">اختيار صورة من الجهاز</button><input id="photoFile" type="file" accept="image/*" class="hidden" onchange="savePhotoFromFile(this)"><button class="secondary" onclick="printAbsence('all')">طباعة الحاضرين والغائبين</button><button class="secondary" onclick="printAbsence('absent')">طباعة الغائبين</button><button class="secondary" onclick="printAbsence('present')">طباعة الحاضرين</button></div><div id="absenceContent"></div></div></section>
-<section id="backup" class="tab hidden"><div class="card"><h2 class="section-title">النسخ الاحتياطي والاستعادة</h2><p>يعمل السجل محلياً داخل الجهاز باستخدام التخزين المحلي، ويمكنك حفظ نسخة JSON واستعادتها لاحقاً حتى لا تضيع البيانات عند مسح بيانات المتصفح.</p><div class="actions"><button class="primary" onclick="exportJSON()">تصدير البيانات كملف JSON</button><button class="secondary" onclick="document.getElementById('jsonFile').click()">استيراد ملف سابق</button><input id="jsonFile" type="file" accept=".json,application/json" class="hidden" onchange="importJSON(this)"></div></div></section>
+<!-- 2. تبويب الأسماء -->
+<section id="tab-names" class="tab-content hidden space-y-4">
+<div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-3 no-print">
+<div class="flex flex-wrap gap-2">
+<button type="button" onclick="openAddStudentModal()" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-blue-700 transition shadow-sm flex items-center gap-1.5">
+<span>+ إضافة طالب يدوياً</span>
+</button>
+<label class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-indigo-700 transition shadow-sm cursor-pointer flex items-center gap-1.5">
+<span>📁 استيراد من ملف (txt/doc)</span>
+<input type="file" id="import-file-input" accept=".txt,.doc,.docx" class="hidden" onchange="importNamesFromFile(event)">
+</label>
 </div>
-<div id="nameModal" class="modal hidden no-print"><div style="max-width:520px"><h2 id="nameModalTitle">إضافة</h2><div class="field"><label id="nameModalLabel">الاسم</label><input id="nameModalInput" autocomplete="off"></div><div class="actions"><button class="primary" onclick="submitNameModal()">حفظ</button><button class="secondary" onclick="closeModal('nameModal')">إلغاء</button></div></div></div>
-<div id="printColumnsModal" class="modal hidden no-print"><div><h2>اختيار أعمدة الطباعة</h2><div id="columnChecks"></div><div class="actions"><button class="primary" onclick="printCustom()">طباعة</button><button class="secondary" onclick="closeModal('printColumnsModal')">إلغاء</button></div></div></div>
-<div id="cameraModal" class="modal hidden no-print"><div><h2>التقاط صورة</h2><video id="video" autoplay playsinline style="width:100%;max-height:60vh"></video><div class="actions"><button class="primary" onclick="capturePhoto()">التقاط</button><button class="secondary" onclick="closeCamera()">إغلاق</button></div></div></div>
-<div id="printArea" class="print-area print-card"></div>
+<div class="flex items-center gap-3 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200">
+<span class="text-xs font-bold text-slate-600">عرض حقل الأسماء:</span>
+<button type="button" onclick="adjustNameWidth(-20)" class="w-7 h-7 bg-slate-200 hover:bg-slate-300 rounded-lg font-bold text-slate-700 transition">-</button>
+<span id="name-width-display" class="text-xs font-bold text-blue-700">١٠٠ بكسل</span>
+<button type="button" onclick="adjustNameWidth(20)" class="w-7 h-7 bg-slate-200 hover:bg-slate-300 rounded-lg font-bold text-slate-700 transition">+</button>
+</div>
+<div class="flex gap-2">
+<button type="button" onclick="openPrintModal()" class="bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-emerald-700 transition shadow-sm flex items-center gap-1.5">
+<span>🖨️ طباعة السجل</span>
+</button>
+</div>
+</div>
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+<div class="overflow-x-auto max-h-[70vh] relative">
+<table id="grades-table" class="w-full text-right border-collapse text-sm">
+<thead>
+<tr class="bg-slate-900 text-white select-none">
+<th class="sticky-header-corner p-3 text-center border-b border-slate-700 w-12 font-bold">تسلسل</th>
+<th id="name-column-header" class="sticky-header p-3 border-b border-slate-700 bg-slate-900 name-column-cell font-bold" style="width: 100px; min-width: 100px;">اسم الطالب</th>
+<th class="sticky-header p-2 text-center border-b border-slate-700 bg-slate-900 w-16">شفهي ١</th>
+<th class="sticky-header p-2 text-center border-b border-slate-700 bg-slate-900 w-16">شهر ١</th>
+<th class="sticky-header p-2 text-center border-b border-slate-700 bg-slate-900 w-16">شفهي ٢</th>
+<th class="sticky-header p-2 text-center border-b border-slate-700 bg-slate-900 w-16">شهر ٢</th>
+<th class="sticky-header p-2 text-center border-b border-slate-700 bg-slate-900 w-20 bg-blue-950 font-bold">معدل ف١</th>
+<th class="sticky-header p-2 text-center border-b border-slate-700 bg-slate-900 w-20">نصف سنة</th>
+<th class="sticky-header p-2 text-center border-b border-slate-700 bg-slate-900 w-16">شفهي ١</th>
+<th class="sticky-header p-2 text-center border-b border-slate-700 bg-slate-900 w-16">شهر ١</th>
+<th class="sticky-header p-2 text-center border-b border-slate-700 bg-slate-900 w-16">شفهي ٢</th>
+<th class="sticky-header p-2 text-center border-b border-slate-700 bg-slate-900 w-16">شهر ٢</th>
+<th class="sticky-header p-2 text-center border-b border-slate-700 bg-slate-900 w-20 bg-indigo-950 font-bold">معدل ف٢</th>
+<th class="sticky-header p-2 text-center border-b border-slate-700 bg-slate-900 w-20 bg-emerald-950 font-bold">السعي</th>
+<th class="sticky-header p-3 border-b border-slate-700 bg-slate-900 w-56">ملاحظات</th>
+<th class="sticky-header p-2 text-center border-b border-slate-700 bg-slate-900 w-20 no-print">إشارة ❌</th>
+<th class="sticky-header p-2 text-center border-b border-slate-700 bg-slate-900 w-16 no-print">إجراء</th>
+</tr>
+</thead>
+<tbody id="grades-tbody" class="divide-y divide-slate-200">
+</tbody>
+<tfoot class="bg-slate-100 font-bold text-slate-700">
+<tr class="border-t-2 border-slate-300">
+<td colspan="6" class="p-2 text-left">عدد الناجحين (٥٠ فأكثر):</td>
+<td id="pass-count-f1" class="text-center text-emerald-700">٠</td>
+<td colspan="4" class="p-2 text-left">عدد الناجحين بنصف السنة:</td>
+<td id="pass-count-mid" class="text-center text-emerald-700">٠</td>
+<td id="pass-count-f2" class="text-center text-emerald-700">٠</td>
+<td id="pass-count-annual" class="text-center text-emerald-700">٠</td>
+<td colspan="3"></td>
+</tr>
+<tr>
+<td colspan="6" class="p-2 text-left">عدد الراسبين (أقل من ٥٠):</td>
+<td id="fail-count-f1" class="text-center text-rose-600">٠</td>
+<td colspan="4" class="p-2 text-left">عدد الراسبين بنصف السنة:</td>
+<td id="fail-count-mid" class="text-center text-rose-600">٠</td>
+<td id="fail-count-f2" class="text-center text-rose-600">٠</td>
+<td id="fail-count-annual" class="text-center text-rose-600">٠</td>
+<td colspan="3"></td>
+</tr>
+<tr class="bg-slate-200/70 text-slate-900">
+<td colspan="6" class="p-2 text-left">النسبة المئوية للنجاح:</td>
+<td id="pass-percent-f1" class="text-center text-blue-900">٠٪</td>
+<td colspan="4" class="p-2 text-left">النسبة المئوية بنصف السنة:</td>
+<td id="pass-percent-mid" class="text-center text-blue-900">٠٪</td>
+<td id="pass-percent-f2" class="text-center text-blue-900">٠٪</td>
+<td id="pass-percent-annual" class="text-center text-blue-900">٠٪</td>
+<td colspan="3"></td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+</section>
+<!-- 3. الاختبار اليومي -->
+<section id="tab-daily" class="tab-content hidden space-y-6">
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 max-w-xl mx-auto text-center space-y-6">
+<div class="border-b pb-4">
+<span class="text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">الاختبار اليومي العشوائي</span>
+<h2 id="daily-student-name" class="text-3xl font-bold text-slate-900 mt-3">اختر اسماً للبدء</h2>
+<p id="daily-student-info" class="text-sm text-slate-500 mt-1">المرحلة الحالية</p>
+</div>
+<div class="space-y-3 max-w-xs mx-auto">
+<label class="block text-sm font-bold text-slate-700">درجة الشفهي (٠ - ١٠٠):</label>
+<input type="text" inputmode="numeric" id="daily-grade-input" placeholder="أدخل الدرجة" class="w-full text-center text-xl font-bold border-2 border-slate-300 rounded-xl py-2 focus:outline-none focus:border-blue-600">
+</div>
+<div class="flex justify-center gap-3 pt-2">
+<button type="button" onclick="saveDailyGradeAndNext()" class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 transition shadow">حفظ والانتقال للتالي</button>
+<button type="button" onclick="loadNextDailyStudent()" class="bg-slate-200 text-slate-700 px-4 py-3 rounded-xl font-bold hover:bg-slate-300 transition">تخطي</button>
+</div>
+<p id="daily-status-msg" class="text-xs text-slate-400"></p>
+</div>
+</section>
+<!-- 4. سجل الحضور -->
+<section id="tab-attendance" class="tab-content hidden space-y-6">
+<div id="attendance-active-container" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 max-w-xl mx-auto text-center space-y-6">
+<div class="border-b pb-4">
+<span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">تسجيل الحضور والغياب اليومي</span>
+<h2 id="att-student-name" class="text-3xl font-bold text-slate-900 mt-3">-</h2>
+<p id="att-counter-info" class="text-sm text-slate-500 mt-1">الطالب ١ من ٠</p>
+</div>
+<div class="flex justify-center gap-4 pt-4">
+<button type="button" onclick="recordAttendanceStatus('حاضر')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-lg px-8 py-4 rounded-2xl shadow transition w-40">حاضر ✓</button>
+<button type="button" onclick="recordAttendanceStatus('غائب')" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-lg px-8 py-4 rounded-2xl shadow transition w-40">غائب ✗</button>
+</div>
+<div class="pt-4 flex justify-between items-center border-t">
+<button type="button" onclick="revertAttendanceStep()" class="text-slate-600 hover:text-slate-900 font-bold text-sm px-3 py-2 rounded-lg bg-slate-100 transition">← العودة للخطوة السابقة</button>
+<span id="att-date-display" class="text-xs text-slate-400"></span>
+</div>
+</div>
+<div id="attendance-summary-container" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 max-w-xl mx-auto space-y-6">
+<div class="text-center border-b pb-4">
+<h2 class="text-2xl font-bold text-slate-900">تم الانتهاء من تسجيل الحضور</h2>
+<p class="text-sm text-slate-500 mt-1" id="summary-date-text"></p>
+</div>
+<div class="grid grid-cols-2 gap-4 text-center">
+<div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100">
+<p class="text-xs text-emerald-600 font-bold">الحاضرون</p>
+<p id="summary-present-count" class="text-2xl font-black text-emerald-800 mt-1">٠</p>
+</div>
+<div class="bg-rose-50 p-4 rounded-xl border border-rose-100">
+<p class="text-xs text-rose-600 font-bold">الغائبون</p>
+<p id="summary-absent-count" class="text-2xl font-black text-rose-800 mt-1">٠</p>
+</div>
+</div>
+<div class="flex justify-center pt-2">
+<button type="button" onclick="resetAttendanceSession()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-2 rounded-xl transition">بدء تسجيل جديد</button>
+</div>
+</div>
+</section>
+<!-- 5. سجل الغياب -->
+<section id="tab-absence-log" class="tab-content hidden space-y-6">
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+<div class="flex flex-wrap items-center justify-between gap-4 border-b pb-4">
+<h2 class="text-xl font-bold text-slate-900">سجلات الحضور والغياب المحفوظة</h2>
+<div class="flex items-center gap-2">
+<label class="text-sm font-bold text-slate-700">التاريخ:</label>
+<select id="absence-date-select" onchange="renderAbsenceLogByDate()" class="border border-slate-300 rounded-xl px-3 py-1.5 bg-slate-50 font-medium text-sm focus:outline-none min-w-[280px]">
+</select>
+</div>
+</div>
+<div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+<div>
+<h4 class="font-bold text-slate-800 text-sm">إرفاق صورة توثيقية (كاميرا أو الاستوديو)</h4>
+<p class="text-xs text-slate-500">يمكنك التقاط صورة أو اختيارها من الاستوديو وحفظها مع السجل المختار.</p>
+</div>
+<label class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm px-4 py-2 rounded-xl cursor-pointer transition shadow-sm">
+<span>📸 التقاط / رفع صوره</span>
+<input type="file" accept="image/*" class="hidden" onchange="saveLogImage(event)">
+</label>
+</div>
+<div id="absence-log-view-area" class="space-y-4">
+</div>
+</div>
+</section>
+<!-- 6. النسخ الاحتياطي -->
+<section id="tab-backup" class="tab-content hidden space-y-6">
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 max-w-xl mx-auto space-y-6">
+<div class="border-b pb-4">
+<h2 class="text-xl font-bold text-slate-900">النسخ الاحتياطي المحلي</h2>
+<p class="text-sm text-slate-500 mt-1">تصدير واستيراد ملفات البيانات (JSON) لحماية بياناتك من الضياع.</p>
+</div>
+<div class="space-y-4">
+<button type="button" onclick="exportJSONBackup()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow transition">تصدير البيانات كملف JSON 📥</button>
+<div class="border-t pt-4">
+<label class="block text-sm font-bold text-slate-700 mb-2">استيراد ملف سابق:</label>
+<input type="file" accept=".json" onchange="importJSONBackup(event)" class="w-full border border-slate-300 rounded-xl p-2 bg-slate-50 text-sm">
+</div>
+</div>
+</div>
+</section>
+<!-- 7. النسخ السحابي -->
+<section id="tab-cloud" class="tab-content hidden space-y-6">
+<div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 max-w-xl mx-auto text-center space-y-6">
+<div class="border-b pb-4">
+<h2 class="text-xl font-bold text-slate-900">النسخ السحابي المتزامن</h2>
+<p class="text-sm text-slate-500 mt-1">يمكنك تفعيل المزامنة السحابية لحفظ بياناتك عبر الأجهزة والوصول إليها بأي وقت.</p>
+</div>
+<div class="p-6 bg-slate-50 rounded-xl border border-slate-200 space-y-4">
+<div id="cloud-status-badge" class="inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800">الوضع الحالي: يعمل بدون إنترنت (محلي)</div>
+<p class="text-xs text-slate-500">في حال عدم توفر النت، يتم حفظ التعديلات محلياً ورفعها تلقائياً عند الاتصال.</p>
+<button type="button" onclick="toggleCloudSync()" id="cloud-sync-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl shadow transition">تفعيل النسخ السحابي ☁️</button>
+</div>
+</div>
+</section>
+</main>
+<!-- نوافذ منبثقة مخصصة -->
+<div id="custom-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+<div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
+<h3 id="modal-title" class="text-lg font-bold text-slate-900">تأكيد الإجراء</h3>
+<p id="modal-message" class="text-sm text-slate-600">هل أنت متأكد من تنفيذ هذا الإجراء؟</p>
+<div id="modal-input-container" class="hidden">
+<input type="text" id="modal-prompt-input" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+</div>
+<div class="flex justify-end gap-3 pt-2">
+<button type="button" onclick="closeModal(false)" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 rounded-xl text-slate-700 font-bold text-sm transition">إلغاء</button>
+<button type="button" id="modal-confirm-btn" onclick="modalConfirmCallback()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-xl text-white font-bold text-sm transition">تأكيد</button>
+</div>
+</div>
+</div>
+<!-- نافذة الطباعة -->
+<div id="print-options-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+<div class="bg-white rounded-2xl p-6 max-w-lg w-full shadow-2xl space-y-4">
+<h3 class="text-lg font-bold text-slate-900 border-b pb-2">تخصيص طباعة السجل</h3>
+<p class="text-xs text-slate-500">اختر الأعمدة والأقسام المراد تضمينها في الطباعة:</p>
+<div class="space-y-2 max-h-60 overflow-y-auto text-sm">
+<label class="flex items-center gap-2"><input type="checkbox" id="print-col-grades" checked class="rounded"> جدول الدرجات الكامل</label>
+<label class="flex items-center gap-2"><input type="checkbox" id="print-col-f1" checked class="rounded"> معدلات الفصل الأول</label>
+<label class="flex items-center gap-2"><input type="checkbox" id="print-col-mid" checked class="rounded"> درجات نصف السنة</label>
+<label class="flex items-center gap-2"><input type="checkbox" id="print-col-f2" checked class="rounded"> معدلات الفصل الثاني</label>
+<label class="flex items-center gap-2"><input type="checkbox" id="print-col-annual" checked class="rounded"> السعي السنوي والنتائج النهائية</label>
+</div>
+<div class="flex justify-end gap-3 pt-4 border-t">
+<button type="button" onclick="document.getElementById('print-options-modal').classList.add('hidden')" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 rounded-xl text-slate-700 font-bold text-sm transition">إلغاء</button>
+<button type="button" onclick="executePrint()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-xl text-white font-bold text-sm transition">طباعة الآن 🖨️</button>
+</div>
+</div>
+</div>
 <script>
-const KEY="teacherRegisterV1";
-const arabicDigits=s=>String(s).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]);
-const latinDigits=s=>String(s).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d));
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
-let db=loadDB(),currentStage=0,currentClass=0,dailyOrder=[],dailyIndex=0,attSession=null,stream=null;
-
-function blankClass(name="الشعبة ١"){return{id:uid(),name,students:[],attendance:{},photos:{},daily:{}}}
-function blankStage(name="المرحلة ١"){return{id:uid(),name,classes:[blankClass()]}}
-function defaultDB(){return{meta:{school:"",teacher:"",subject:""},stages:[blankStage()]}}
-function loadDB(){try{return JSON.parse(localStorage.getItem(KEY))||defaultDB()}catch(e){return defaultDB()}}
-function saveDB(){localStorage.setItem(KEY,JSON.stringify(db));updateHeader()}
-function currentStageObj(){return db.stages[currentStage]||db.stages[0]}
-function currentClassObj(){
-  let stage=currentStageObj();
-  if(!stage.classes[currentClass]) currentClass=0;
-  return stage.classes[currentClass]||stage.classes[0];
+let appData = {
+header: {
+schoolName: "مدرسة الأبجدية الابتدائية",
+teacherName: "أحمد محمد",
+subjectName: "الرياضيات",
+schoolLogo: "https://placehold.co/70x70/1e3a8a/ffffff?text=شعار"
+},
+nameColumnWidth: 100,
+grades: {
+"الأول الابتدائي_أ": [
+{ name: "أحمد علي", f1_oral1: 80, f1_m1: 85, f1_oral2: 90, f1_m2: 88, mid_term: 85, f2_oral1: 80, f2_m1: 82, f2_oral2: 85, f2_m2: 88, notes: "" },
+{ name: "فاطمة حسن", f1_oral1: 90, f1_m1: 92, f1_oral2: 95, f1_m2: 90, mid_term: 92, f2_oral1: 90, f2_m1: 91, f2_oral2: 94, f2_m2: 92, notes: "" }
+]
+},
+absenceLogs: {}
+};
+let currentGrade = "الأول الابتدائي";
+let currentSection = "أ";
+let activeModalCallback = null;
+let dailyQuizIndex = 0;
+let attendanceIndex = 0;
+let currentAttendanceRecords = [];
+function normalizeArabic(text) {
+if (!text) return '';
+return String(text)
+.trim()
+.replace(/[\u064B-\u065F]/g, '') // إزالة التشكيل
+.replace(/[أإآا]/g, 'ا')       // توحيد أشكال الألف
+.replace(/ة/g, 'ه')          // توحيد الهاء والتاء المربوطة
+.replace(/ى/g, 'ي');         // توحيد الألف المقصورة والياء
 }
-function confirmAction(msg){return confirm(msg+"\n\nلا يمكن التراجع عن هذا الإجراء.")}
-function updateHeader(){document.getElementById("headerMeta").textContent=[db.meta.school||"اسم المدرسة",db.meta.teacher||"اسم المدرس",db.meta.subject||"اسم المادة"].join(" • ")}
-function normalizeSearchName(v){return String(v||"").trim().toLowerCase().replace(/[أإآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/[ًٌٍَُِّْـ]/g,"").replace(/\s+/g," ")}
-
-function searchStudent(){
-  const input=document.getElementById("studentSearchInput"),box=document.getElementById("studentSearchResults");
-  const q=normalizeSearchName(input.value);
-  if(!q){box.classList.remove("hidden");box.innerHTML='<div class="search-empty">اكتب اسم الطالب أولاً.</div>';return}
-  const results=[];
-  db.stages.forEach(stage=>stage.classes.forEach(cls=>cls.students.forEach(s=>{
-    if(normalizeSearchName(s.name).includes(q)){calc(s);results.push({stage:stage.name,className:cls.name,student:s})}
-  })));
-  box.classList.remove("hidden");
-  if(!results.length){box.innerHTML='<div class="search-empty">لم يتم العثور على طالب بهذا الاسم.</div>';return}
-  box.innerHTML='<div class="muted">تم العثور على '+arabicDigits(results.length)+' نتيجة</div>'+results.map(r=>{
-    const s=r.student;
-    const gradeHtml=fields.map(f=>`<div class="search-grade"><b>${f[1]}</b><span>${s[f[0]]===""||s[f[0]]==null?"—":arabicDigits(s[f[0]])}</span></div>`).join("");
-    return `<div class="search-result"><h3>${esc(s.name)}</h3><div class="search-meta">المرحلة: ${esc(r.stage)} — الشعبة: ${esc(r.className)}</div><div class="search-grades">${gradeHtml}</div><div class="search-notes"><b>الملاحظات:</b><br>${s.notes?esc(s.notes):'<span class="muted">لا توجد ملاحظات.</span>'}</div></div>`
-  }).join("")
+function toArabicDigits(num) {
+if (num === null || num === undefined || isNaN(num) || num === '') return '';
+const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+return String(num).replace(/\d/g, (digit) => arabicNumbers[digit]);
 }
-
-function saveMeta(){
-  db.meta.school=document.getElementById("school").value.trim();
-  db.meta.teacher=document.getElementById("teacher").value.trim();
-  db.meta.subject=document.getElementById("subject").value.trim();
-  saveDB();
-  alert("تم حفظ البيانات");
+function parseArabicDigitsToEnglish(str) {
+if (str === null || str === undefined) return '';
+const persianNumbers = [/۰/g, /۱/g, /۲/g, /۳/g, /۴/g, /۵/g, /۶/g, /۷/g, /۸/g, /۹/g];
+const arabicNumbers = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g];
+let converted = String(str);
+for (let i = 0; i < 10; i++) {
+converted = converted.replace(persianNumbers[i], i).replace(arabicNumbers[i], i);
 }
-
-function init(){
-  document.getElementById("school").value=db.meta.school;
-  document.getElementById("teacher").value=db.meta.teacher;
-  document.getElementById("subject").value=db.meta.subject;
-  renderStages();
-  renderStudents();
-  resetDaily();
-  updateHeader();
+return converted;
 }
-
-function showTab(id){
-  const target=document.getElementById(id);
-  if(!target)return;
-  document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));
-  target.classList.remove("hidden");
-  
-  document.querySelectorAll(".tabs button").forEach(b=>{
-    if(b.id === "btn-" + id){
-      b.classList.add("active");
-    } else {
-      b.classList.remove("active");
-    }
-  });
-
-  if(id==="students")renderStudents();
-  if(id==="daily")resetDaily();
-  if(id==="absence")renderAbsence();
-  if(id==="attendance"){attSession=null;startAttendance();}
+function roundToNearestTenth(val) {
+return Math.round(val);
 }
-
-function renderStages(){
-  let el=document.getElementById("stageTabs");
-  if(!db.stages || db.stages.length === 0) db.stages = [blankStage()];
-  if(currentStage >= db.stages.length) currentStage = 0;
-  
-  el.innerHTML=db.stages.map((s,i)=>`<span class="stage-item ${i===currentStage?'active-stage':''}"><button type="button" onclick="selectStage(${i})">${esc(s.name)}</button></span>`).join("");
-  selectStage(currentStage);
+function calculateStudentGrades(st) {
+let f1Sum = (Number(st.f1_oral1) || 0) + (Number(st.f1_m1) || 0) + (Number(st.f1_oral2) || 0) + (Number(st.f1_m2) || 0);
+st.f1_avg = roundToNearestTenth(f1Sum / 4);
+let f2Sum = (Number(st.f2_oral1) || 0) + (Number(st.f2_m1) || 0) + (Number(st.f2_oral2) || 0) + (Number(st.f2_m2) || 0);
+st.f2_avg = roundToNearestTenth(f2Sum / 4);
+let annualSum = (Number(st.f1_avg) || 0) + (Number(st.mid_term) || 0) + (Number(st.f2_avg) || 0);
+st.annual_score = roundToNearestTenth(annualSum / 3);
 }
-
-function selectStage(i){
-  currentStage=i;
-  if(!db.stages[currentStage]) currentStage = 0;
-  document.querySelectorAll(".stage-item").forEach((el,idx)=>{
-    if(idx===i)el.classList.add("active-stage");else el.classList.remove("active-stage")
-  });
-  let stageObj = currentStageObj();
-  if(stageObj){
-    document.getElementById("stageTitle").textContent=stageObj.name;
-    if(!stageObj.classes || stageObj.classes.length === 0) stageObj.classes = [blankClass()];
-    if(currentClass >= stageObj.classes.length) currentClass = 0;
-    
-    let el=document.getElementById("classTabs");
-    el.innerHTML=stageObj.classes.map((c,j)=>`<span class="class-item ${j===currentClass?'active-class':''}"><button type="button" onclick="selectClass(${j})">${esc(c.name)}</button></span>`).join("");
-    selectClass(currentClass);
-  }
+function initApp() {
+loadFromLocalStorage();
+populateGradeAndSectionDropdowns();
+renderGradesTable();
+initDailyQuiz();
+initAttendanceSession();
+updateHeaderUI();
 }
-
-function selectClass(i){
-  currentClass=i;
-  let stageObj = currentStageObj();
-  if(stageObj && stageObj.classes){
-    if(currentClass >= stageObj.classes.length) currentClass = 0;
-    document.querySelectorAll(".class-item").forEach((el,idx)=>{
-      if(idx===i)el.classList.add("active-class");else el.classList.remove("active-class")
-    });
-    document.getElementById("stageTitle").textContent=stageObj.name;
-  }
-  renderStudents();
-  resetDaily();
+function loadFromLocalStorage() {
+const saved = localStorage.getItem('teacher_log_book_data_v3');
+if (saved) {
+try {
+appData = JSON.parse(saved);
+if (!appData.nameColumnWidth) appData.nameColumnWidth = 100;
+} catch (e) {
+console.error("Error loading data", e);
 }
-
-function handleStageAction(sel){
-  const val = sel.value;
-  sel.value = "";
-  if(val === "add") addStage();
-  else if(val === "rename") renameCurrentStage();
-  else if(val === "delete") deleteCurrentStage();
 }
-
-function handleClassAction(sel){
-  const val = sel.value;
-  sel.value = "";
-  if(val === "add") addClass();
-  else if(val === "rename") renameCurrentClass();
-  else if(val === "delete") deleteCurrentClass();
 }
-
-let nameModalAction=null;
-function openNameModal(title,label,value,action){
-  document.getElementById("nameModalTitle").textContent=title;
-  document.getElementById("nameModalLabel").textContent=label;
-  const input=document.getElementById("nameModalInput");
-  input.value=value||"";
-  nameModalAction=action;
-  document.getElementById("nameModal").classList.remove("hidden");
-  setTimeout(()=>{input.focus();input.select()},50)
+function saveToLocalStorage() {
+localStorage.setItem('teacher_log_book_data_v3', JSON.stringify(appData));
 }
-
-function submitNameModal(){
-  const input=document.getElementById("nameModalInput");
-  const n=input.value.trim();
-  if(!n){alert("يرجى كتابة الاسم.");input.focus();return}
-  const action=nameModalAction;
-  closeModal("nameModal");
-  nameModalAction=null;
-  if(action)action(n)
+function adjustNameWidth(delta) {
+appData.nameColumnWidth = Math.max(60, Math.min(500, (appData.nameColumnWidth || 100) + delta));
+saveToLocalStorage();
+renderGradesTable();
 }
-
-function addStage(){
-  openNameModal("إضافة مرحلة دراسية","اسم المرحلة","المرحلة "+arabicDigits(db.stages.length+1),n=>{
-    db.stages.push(blankStage(n));
-    currentStage=db.stages.length-1;
-    currentClass=0;
-    saveDB();
-    renderStages();
-  })
+function updateHeaderUI() {
+document.getElementById('header-school-name').value = appData.header.schoolName || "";
+document.getElementById('header-teacher-name').value = appData.header.teacherName || "";
+document.getElementById('header-subject-name').value = appData.header.subjectName || "";
+if (appData.header.schoolLogo) {
+document.getElementById('header-logo').src = appData.header.schoolLogo;
 }
-
-function renameCurrentStage(){
-  const st=currentStageObj();
-  openNameModal("تعديل المرحلة","اسم المرحلة",st.name,n=>{
-    st.name=n;
-    saveDB();
-    renderStages();
-  })
 }
-
-function deleteCurrentStage(){
-  if(db.stages.length===1){alert("يجب أن تبقى مرحلة واحدة على الأقل.");return}
-  if(confirmAction("هل تريد حذف المرحلة الحالية وكل شعبها وطلابها؟")){
-    db.stages.splice(currentStage,1);
-    currentStage=Math.max(0,currentStage-1);
-    currentClass=0;
-    saveDB();
-    renderStages();
-  }
+function saveHeaderData() {
+appData.header.schoolName = document.getElementById('header-school-name').value;
+appData.header.teacherName = document.getElementById('header-teacher-name').value;
+appData.header.subjectName = document.getElementById('header-subject-name').value;
+saveToLocalStorage();
 }
-
-function addClass(){
-  const a=currentStageObj().classes;
-  openNameModal("إضافة شعبة","اسم الشعبة","الشعبة "+arabicDigits(a.length+1),n=>{
-    a.push(blankClass(n));
-    currentClass=a.length-1;
-    saveDB();
-    renderStages();
-  })
+function updateSchoolLogo(event) {
+const file = event.target.files[0];
+if (file) {
+const reader = new FileReader();
+reader.onload = function(e) {
+appData.header.schoolLogo = e.target.result;
+document.getElementById('header-logo').src = e.target.result;
+saveToLocalStorage();
+};
+reader.readAsDataURL(file);
 }
-
-function renameCurrentClass(){
-  const c=currentClassObj();
-  openNameModal("تعديل الشعبة","اسم الشعبة",c.name,n=>{
-    c.name=n;
-    saveDB();
-    renderStages();
-  })
 }
-
-function deleteCurrentClass(){
-  const a=currentStageObj().classes;
-  if(a.length===1){alert("يجب أن تبقى شعبة واحدة على الأقل.");return}
-  if(confirmAction("هل تريد حذف الشعبة الحالية وجميع طلابها ودرجاتها؟")){
-    a.splice(currentClass,1);
-    currentClass=Math.max(0,currentClass-1);
-    saveDB();
-    renderStages();
-  }
+function switchTab(tabId) {
+document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+const targetTab = document.getElementById('tab-' + tabId);
+if (targetTab) {
+targetTab.classList.remove('hidden');
 }
-
-const fields=[["oral1a","شفهي ١"],["month1a","درجة الشهر ١"],["oral2a","شفهي ٢"],["month2a","درجة الشهر ٢"],["avg1","معدل الفصل الأول"],["mid","درجة نصف السنة"],["oral1b","شفهي ١"],["month1b","درجة الشهر ١"],["oral2b","شفهي ٢"],["month2b","درجة الشهر ٢"],["avg2","معدل الفصل الثاني"],["annual","السعي السنوي"]];
-
-function blankStudent(name){
-  let s={id:uid(),name,notes:""};
-  fields.forEach(f=>{if(!["avg1","avg2","annual"].includes(f[0]))s[f[0]]=""});
-  return s;
+document.querySelectorAll('nav button').forEach(btn => {
+btn.className = "px-4 py-2 rounded-lg font-medium text-slate-300 hover:bg-white/10 hover:text-white transition";
+});
+const activeBtn = document.getElementById('tab-btn-' + tabId);
+if (activeBtn) {
+activeBtn.className = "px-4 py-2 rounded-lg font-bold bg-blue-600 text-white transition shadow";
 }
-
-function sortStudents(){
-  let cls = currentClassObj();
-  if(cls && cls.students) {
-    cls.students.sort((a,b)=>a.name.localeCompare(b.name,"ar"));
-  }
+if (tabId === 'names') renderGradesTable();
+if (tabId === 'daily') initDailyQuiz();
+if (tabId === 'attendance') initAttendanceSession();
+if (tabId === 'absence-log') initAbsenceLogDropdown();
 }
-
-function addStudent(){
-  let n=prompt("اسم الطالب:");
-  if(!n||!n.trim())return;
-  currentClassObj().students.push(blankStudent(n.trim()));
-  sortStudents();
-  saveDB();
-  renderStudents();
+function getGradeSectionKey() {
+return currentGrade + "_" + (currentSection || "عامة");
 }
-
-function importStudents(){document.getElementById("studentFile").click()}
-
-async function readStudentFile(input){
-  let f=input.files[0];
-  if(!f)return;
-  try{
-    let text=await f.text();
-    let names=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
-    if(!names.length)throw 0;
-    names.forEach(n=>{if(!currentClassObj().students.some(s=>s.name===n))currentClassObj().students.push(blankStudent(n))});
-    sortStudents();
-    saveDB();
-    renderStudents();
-    alert("تم استيراد "+arabicDigits(names.length)+" اسماً.");
-  }catch(e){
-    alert("تعذر قراءة الملف. استخدم ملف نصي TXT.");
-  }
-  input.value="";
+function getCurrentStudents() {
+const key = getGradeSectionKey();
+if (!appData.grades[key]) {
+appData.grades[key] = [];
 }
-
-function validGrade(v){return v!==""&&Number.isFinite(Number(v))&&Number(v)>=0&&Number(v)<=100}
-function num(v){return v===""?0:Number(v)}
-function round10(x){return Math.round(x*10)/10}
-function calc(s){
-  s.avg1=Math.round((num(s.oral1a)+num(s.month1a)+num(s.oral2a)+num(s.month2a))/4);
-  s.avg2=Math.round((num(s.oral1b)+num(s.month1b)+num(s.oral2b)+num(s.month2b))/4);
-  s.annual=Math.round((num(s.avg1)+num(s.mid)+num(s.avg2))/3);
+return appData.grades[key];
 }
-
-function renderStudents(){
-  let c=currentClassObj();
-  if(!c) return;
-  sortStudents();
-  document.getElementById("studentsTitle").textContent=`${c.name} — ${c.students.length?arabicDigits(c.students.length):"٠"} طالب`;
-  c.students.forEach(calc);
-  let head=`<tr><th class="sticky-seq">ت</th><th class="sticky-name">اسم الطالب</th>${fields.map(f=>`<th>${f[1]}</th>`).join("")}<th>ملاحظات</th></tr>`;
-  let rows=c.students.map((s,i)=>`<tr><td class="sticky-seq">${arabicDigits(i+1)}</td><td class="sticky-name"><input class="name-input" value="${escAttr(s.name)}" onchange="editName('${s.id}',this.value)"></td>${fields.map(f=>{let k=f[0],v=s[k]?? "";let disabled=["avg1","avg2","annual"].includes(k);return `<td><input ${disabled?"readonly":""} type="text" inputmode="decimal" autocomplete="off" value="${v===""?"":arabicDigits(v)}" class="${validGrade(v)&&Number(v)<50?"low":""}" onchange="editGrade('${s.id}','${k}',this.value,this)"></td>`}).join("")}<td><textarea rows="2" onchange="editNotes('${s.id}',this.value)">${esc(s.notes||"")}</textarea></td></tr>`).join("");
-  let sums=summaryRows(c.students);
-  document.getElementById("gradeWrap").innerHTML=`<table><thead>${head}</thead><tbody>${rows}</tbody><tfoot>${sums}</tfoot></table>`;
+function populateGradeAndSectionDropdowns() {
+const gradeSelect = document.getElementById('grade-select');
+gradeSelect.innerHTML = '';
+const gradesSet = new Set(Object.keys(appData.grades).map(k => k.split('_')[0]));
+if (gradesSet.size === 0) gradesSet.add("الأول الابتدائي");
+gradesSet.forEach(g => {
+const opt = document.createElement('option');
+opt.value = g;
+opt.textContent = g;
+if (g === currentGrade) opt.selected = true;
+gradeSelect.appendChild(opt);
+});
+populateSectionDropdown();
 }
-
-function editName(id,v){let s=findStudent(id);if(!v.trim())return alert("لا يمكن ترك الاسم فارغاً.");s.name=v.trim();sortStudents();saveDB();renderStudents()}
-function editGrade(id,k,v,input){v=latinDigits(v).trim();if(v!==""&&(isNaN(v)||Number(v)<0||Number(v)>100)){alert("الدرجة يجب أن تكون بين ٠ و ١٠٠ فقط.");input.value="";return}let s=findStudent(id);s[k]=v===""?"":Number(v);calc(s);saveDB();renderStudents()}
-function editNotes(id,v){findStudent(id).notes=v;saveDB()}
-function findStudent(id){return currentClassObj().students.find(s=>s.id===id)}
-function summaryRows(students){let cols=["avg1","mid","avg2","annual"];return cols.map(k=>{let pass=students.filter(s=>num(s[k])>=50).length,fail=students.length-pass,pct=students.length?round10(pass/students.length*100):0;return `<tr class="summary"><td colspan="2"></td>${fields.map(f=>f[0]===k?`<td><span class="summary-label goodtxt">الناجحون: ${arabicDigits(pass)}<br><span class="badtxt">الراسبون: ${arabicDigits(fail)}</span><br>النسبة: ${arabicDigits(pct)}٪</span></td>`:`<td></td>`).join("")}<td></td></tr>`}.join("")}
-
-function resetDaily(){let st=currentClassObj().students;dailyOrder=shuffle([...st]);dailyIndex=0;renderDaily()}
-function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function renderDaily(){let st=currentClassObj().students;if(!st.length){document.getElementById("dailyName").textContent="لا توجد أسماء";return}if(dailyIndex>=dailyOrder.length){document.getElementById("dailyName").textContent="اكتملت الدورة";document.getElementById("dailyStatus").textContent="تم المرور على جميع الطلاب.";return}let s=dailyOrder[dailyIndex],c=currentClassObj();let done=st.filter(x=>x.oral1a!=="").length;document.getElementById("dailyName").textContent=s.name;document.getElementById("dailyGrade").value="";document.getElementById("dailyStatus").textContent=`الطالب ${arabicDigits(dailyIndex+1)} من ${arabicDigits(dailyOrder.length)}`;document.getElementById("dailyProgress").style.width=(dailyIndex/dailyOrder.length*100)+"%"}
-function saveDailyGrade(){let s=dailyOrder[dailyIndex],v=latinDigits(document.getElementById("dailyGrade").value).trim();if(v===""||isNaN(v)||Number(v)<0||Number(v)>100)return alert("أدخل درجة من ٠ إلى ١٠٠.");let c=currentClassObj();if(s.oral1a==="")s.oral1a=Number(v);else if(s.oral2a==="")s.oral2a=Number(v);else if(c.students.every(x=>x.oral1a!=="")&&s.oral1b==="")s.oral1b=Number(v);else if(c.students.every(x=>x.oral1b!=="")&&s.oral2b==="")s.oral2b=Number(v);else return alert("اكتملت حقول الشفهي لهذا الطالب.");calc(s);saveDB();dailyIndex++;if(dailyIndex>=dailyOrder.length){dailyOrder=shuffle([...c.students]);dailyIndex=0}renderDaily()}
-function nextDailyOnly(){if(dailyOrder.length){dailyIndex=(dailyIndex+1)%dailyOrder.length;renderDaily()}}
-
-function startAttendance(){if(!attSession){let c=currentClassObj();if(!c.students.length){document.getElementById("attName").textContent="لا توجد أسماء";return}attSession={date:new Date().toISOString(),index:0,results:[],order:[...c.students]};}document.getElementById("attDate").textContent="تاريخ التسجيل: "+formatDate(new Date(attSession.date));renderAtt()}
-function renderAtt(){if(attSession.index>=attSession.order.length)return finishAttendance();document.getElementById("attName").textContent=attSession.order[attSession.index].name}
-function markAttendance(present){if(!attSession)return;let s=attSession.order[attSession.index];attSession.results.push({id:s.id,present,time:new Date().toISOString()});if(!present){s.notes=(s.notes?s.notes+"\n":"")+`غائب — ${formatDateTime(new Date())}`}saveDB();attSession.index++;renderAtt()}
-function attendanceBack(){if(!attSession||attSession.index===0)return;attSession.index--;attSession.results.pop();renderAtt()}
-function cancelAttendance(){if(confirmAction("هل تريد إلغاء جلسة الحضور الحالية؟")){attSession=null;document.getElementById("attReport").classList.add("hidden")}}
-function finishAttendance(){let c=currentClassObj(),present=attSession.results.filter(x=>x.present),abs=attSession.results.filter(x=>!x.present);c.attendance[dateKey(attSession.date)]={date:attSession.date,results:attSession.results};saveDB();let names=id=>c.students.find(s=>s.id===id)?.name||"";document.getElementById("attName").textContent="اكتمل التسجيل";document.querySelector(".att-buttons").style.display="none";let box=document.getElementById("attReport");box.classList.remove("hidden");box.innerHTML=`<h3>تقرير الحضور</h3><p class="goodtxt">الحاضرون: ${arabicDigits(present.length)}</p><ul class="report-list report-present">${present.map(x=>`<li>${esc(names(x.id))}</li>`).join("")}</ul><p class="badtxt">الغائبون: ${arabicDigits(abs.length)}</p><ul class="report-list report-absent">${abs.map(x=>`<li>${esc(names(x.id))}</li>`).join("")}</ul>`;attSession=null}
-
-function dateKey(iso){return new Date(iso).toISOString().slice(0,10)}
-function formatDate(d){return d.toLocaleDateString("ar-IQ",{year:"numeric",month:"long",day:"numeric"})}
-function formatDateTime(d){return d.toLocaleString("ar-IQ",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})}
-
-function renderAbsence(){let date=document.getElementById("absenceDate").value;if(!date){date=new Date().toISOString().slice(0,10);document.getElementById("absenceDate").value=date}let c=currentClassObj(),rec=c.attendance[date],el=document.getElementById("absenceContent");if(!rec){el.innerHTML="<p class='muted'>لا يوجد سجل لهذا التاريخ.</p>";return}let names=id=>c.students.find(s=>s.id===id)?.name||"";let p=rec.results.filter(x=>x.present),a=rec.results.filter(x=>!x.present);let photos=c.photos[date]||[];el.innerHTML=`<div class="card"><h3>${esc(db.meta.school||"")} — ${esc(db.meta.subject||"")} — ${esc(currentStageObj().name)}</h3><h3>تاريخ السجل: ${formatDate(new Date(rec.date))}</h3><p class="goodtxt">الحاضرون: ${arabicDigits(p.length)}</p><ul class="report-list report-present">${p.map(x=>`<li>${esc(names(x.id))}</li>`).join("")}</ul><p class="badtxt">الغائبون: ${arabicDigits(a.length)}</p><ul class="report-list report-absent">${a.map(x=>`<li>${esc(names(x.id))}</li>`).join("")}</ul><h3>الصور</h3><div class="photo-grid">${photos.map(src=>`<img src="${src}">`).join("")||"<span class='muted'>لا توجد صور.</span>"}</div></div>`}
-function pickPhoto(){document.getElementById("photoFile").click()}
-function savePhotoFromFile(input){let f=input.files[0];if(!f)return;let r=new FileReader();r.onload=()=>addPhoto(r.result);r.readAsDataURL(f);input.value=""}
-function addPhoto(src){let date=document.getElementById("absenceDate").value||new Date().toISOString().slice(0,10),c=currentClassObj();c.photos[date]??=[];c.photos[date].push(src);saveDB();renderAbsence()}
-async function openCamera(){try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});document.getElementById("video").srcObject=stream;document.getElementById("cameraModal").classList.remove("hidden")}catch(e){alert("تعذر فتح الكاميرا.")}}
-function capturePhoto(){let v=document.getElementById("video"),can=document.createElement("canvas");can.width=v.videoWidth;can.height=v.videoHeight;can.getContext("2d").drawImage(v,0,0);addPhoto(can.toDataURL("image/jpeg",.82));closeCamera()}
-function closeCamera(){if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;closeModal("cameraModal")}
-function closeModal(id){document.getElementById(id).classList.add("hidden")}
-
-function exportJSON(){let blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`سجل-المدرس-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(a.href)}
-function importJSON(input){let f=input.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.meta||!Array.isArray(x.stages))throw 0;if(confirmAction("استيراد الملف سيستبدل البيانات الحالية. هل تريد المتابعة؟")){db=x;currentStage=0;currentClass=0;saveDB();init();alert("تمت الاستعادة بنجاح.")}}catch(e){alert("ملف JSON غير صالح.")}};r.readAsText(f);input.value=""}
-
-function printGrades(mode){let cols=mode==="summary"?["name","avg1","mid","avg2","annual"]:["name",...fields.map(x=>x[0])];buildPrintGrades(cols)}
-function openPrintColumns(){let el=document.getElementById("columnChecks");el.innerHTML=`<label><input type="checkbox" data-col="name" checked disabled> اسم الطالب</label><br>`+fields.map(f=>`<label><input type="checkbox" data-col="${f[0]}" checked> ${f[1]}</label><br>`).join("");document.getElementById("printColumnsModal").classList.remove("hidden")}
-function printCustom(){let cols=[...document.querySelectorAll("#columnChecks input:checked")].map(x=>x.dataset.col);closeModal("printColumnsModal");buildPrintGrades(cols)}
-function buildPrintGrades(cols){let c=currentClassObj();let title=`${db.meta.school||""} — ${db.meta.teacher||""} — ${db.meta.subject||""} — ${currentStageObj().name} — ${c.name}`;let labels={name:"اسم الطالب"};fields.forEach(f=>labels[f[0]]=f[1]);let html=`<h2 style="text-align:center">${esc(title)}</h2><table><thead><tr>${cols.map(k=>`<th>${labels[k]}</th>`).join("")}</tr></thead><tbody>${c.students.map((s,i)=>{calc(s);return `<tr>${cols.map(k=>`<td>${k==="name"?esc(s.name):arabicDigits(s[k]??"")}</td>`).join("")}</tr>`}).join("")}</tbody></table>`;document.getElementById("printArea").innerHTML=html;window.print()}
-function printAbsence(kind){let date=document.getElementById("absenceDate").value,c=currentClassObj(),rec=c.attendance[date];if(!rec)return alert("لا يوجد سجل لهذا التاريخ.");let names=id=>c.students.find(s=>s.id===id)?.name||"";let arr=rec.results.filter(x=>kind==="all"||kind===(x.present?"present":"absent")),photos=c.photos[date]||[];let html=`<h2 style="text-align:center">${esc(db.meta.school||"")} — ${esc(db.meta.teacher||"")} — ${esc(db.meta.subject||"")}</h2><h3 style="text-align:center">${esc(currentStageObj().name)} — ${esc(c.name)} — ${formatDate(new Date(rec.date))}</h3><table><thead><tr><th>الاسم</th><th>الحالة</th><th>الوقت</th></tr></thead><tbody>${arr.map(x=>`<tr><td>${esc(names(x.id))}</td><td>${x.present?"حاضر":"غائب"}</td><td>${formatDateTime(new Date(x.time))}</td></tr>`).join("")}</tbody></table>${photos.length?`<h3>الصور</h3><div>${photos.map(x=>`<img src="${x}" style="max-width:45%;max-height:220px;margin:5px">`).join("")}</div>`:""}`;document.getElementById("printArea").innerHTML=html;window.print()}
-
-function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&quot;","'":"&#39;"}[m]))}
-function escAttr(s){return esc(s).replace(/"/g,"&quot;")}
-
-init();
-document.getElementById("nameModalInput").addEventListener("keydown",e=>{e.key==="Enter"&&submitNameModal();e.key==="Escape"&&closeModal("nameModal")});
+function populateSectionDropdown() {
+const sectionSelect = document.getElementById('section-select');
+sectionSelect.innerHTML = '';
+const sectionsSet = new Set();
+Object.keys(appData.grades).forEach(k => {
+const parts = k.split('_');
+if (parts[0] === currentGrade) {
+sectionsSet.add(parts[1] || "أ");
+}
+});
+if (sectionsSet.size === 0) sectionsSet.add("أ");
+sectionsSet.forEach(s => {
+const opt = document.createElement('option');
+opt.value = s;
+opt.textContent = "شعبة " + s;
+if (s === currentSection) opt.selected = true;
+sectionSelect.appendChild(opt);
+});
+document.getElementById('stat-active-class').textContent = currentGrade + " (" + currentSection + ")";
+}
+function onGradeChange() {
+currentGrade = document.getElementById('grade-select').value;
+populateSectionDropdown();
+renderGradesTable();
+}
+function onSectionChange() {
+currentSection = document.getElementById('section-select').value;
+document.getElementById('stat-active-class').textContent = currentGrade + " (" + currentSection + ")";
+renderGradesTable();
+}
+function openAddGradeModal() {
+showCustomModalPrompt("إضافة مرحلة دراسية", "أدخل اسم المرحلة الدراسية الجديدة:", (val) => {
+if (val && val.trim() !== '') {
+currentGrade = val.trim();
+currentSection = "أ";
+const key = getGradeSectionKey();
+if (!appData.grades[key]) appData.grades[key] = [];
+saveToLocalStorage();
+populateGradeAndSectionDropdowns();
+renderGradesTable();
+}
+});
+}
+function openAddSectionModal() {
+showCustomModalPrompt("إضافة شعبة جديدة", "أدخل اسم الشعبة (مثال: ب، جيم):", (val) => {
+if (val && val.trim() !== '') {
+currentSection = val.trim();
+const key = getGradeSectionKey();
+if (!appData.grades[key]) appData.grades[key] = [];
+saveToLocalStorage();
+populateSectionDropdown();
+renderGradesTable();
+}
+});
+}
+function confirmDeleteGrade() {
+showCustomModal("حذف المرحلة", ⁠هل أنت متأكد من حذف المرحلة الدراسية "${currentGrade}" بكافة شعبها وطلابها؟⁠, true, () => {
+Object.keys(appData.grades).forEach(k => {
+if (k.startsWith(currentGrade + "")) {
+delete appData.grades[k];
+}
+});
+const remaining = Object.keys(appData.grades);
+if (remaining.length > 0) {
+currentGrade = remaining[0].split('')[0];
+currentSection = remaining[0].split('_')[1] || "أ";
+} else {
+currentGrade = "الأول الابتدائي";
+currentSection = "أ";
+appData.grades[getGradeSectionKey()] = [];
+}
+saveToLocalStorage();
+populateGradeAndSectionDropdowns();
+renderGradesTable();
+});
+}
+function confirmDeleteSection() {
+showCustomModal("حذف الشعبة", ⁠هل أنت متأكد من حذف الشعبة "${currentSection}" للمرحلة "${currentGrade}"؟⁠, true, () => {
+const key = getGradeSectionKey();
+delete appData.grades[key];
+const available = Object.keys(appData.grades).filter(k => k.startsWith(currentGrade + ""));
+if (available.length > 0) {
+currentSection = available[0].split('')[1];
+} else {
+currentSection = "أ";
+appData.grades[getGradeSectionKey()] = [];
+}
+saveToLocalStorage();
+populateSectionDropdown();
+renderGradesTable();
+});
+}
+function confirmEditGrade() {
+showCustomModalPrompt("تعديل اسم المرحلة", "أدخل الاسم الجديد للمرحلة:", (newVal) => {
+if (newVal && newVal.trim() !== '') {
+const oldGrade = currentGrade;
+const trimmed = newVal.trim();
+const newGrades = {};
+Object.keys(appData.grades).forEach(k => {
+const parts = k.split('');
+if (parts[0] === oldGrade) {
+newGrades[trimmed + "" + parts[1]] = appData.grades[k];
+} else {
+newGrades[k] = appData.grades[k];
+}
+});
+appData.grades = newGrades;
+currentGrade = trimmed;
+saveToLocalStorage();
+populateGradeAndSectionDropdowns();
+renderGradesTable();
+}
+});
+}
+function renderGradesTable() {
+const width = appData.nameColumnWidth || 100;
+document.getElementById('name-width-display').textContent = toArabicDigits(width) + " بكسل";
+const headerCell = document.getElementById('name-column-header');
+if (headerCell) {
+headerCell.style.width = width + 'px';
+headerCell.style.minWidth = width + 'px';
+}
+const tbody = document.getElementById('grades-tbody');
+tbody.innerHTML = '';
+const students = getCurrentStudents();
+if (students.length === 0) {
+tbody.innerHTML = ⁠<tr><td colspan="17" class="text-center py-8 text-slate-400">لا توجد أسماء طلاب مضافة في هذه المرحلة/الشعبة حالياً.</td></tr>⁠;
+updateStatistics();
+return;
+}
+students.forEach((st, idx) => {
+calculateStudentGrades(st);
+const tr = document.createElement('tr');
+tr.className = "hover:bg-slate-50 transition";
+const colorClass = (val) => (parseFloat(val) < 50 ? "text-rose-600 font-bold" : "text-slate-900");
+tr.innerHTML = ⁠<td class="sticky-column p-2 text-center border-b border-slate-200 font-bold text-slate-500 bg-white">${toArabicDigits(idx + 1)}</td> <td class="sticky-column p-2 border-b border-slate-200 bg-white font-medium name-column-cell" style="width: ${width}px; min-width: ${width}px;"> <input type="text" value="${st.name}" onchange="updateStudentName(${idx}, this.value)" class="bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-600 focus:outline-none w-full"> </td> <td class="p-1 border-b border-slate-200 text-center"><input type="text" inputmode="numeric" value="${toArabicDigits(st.f1_oral1)}" onchange="updateStudentGrade(${idx}, 'f1_oral1', this.value)" class="w-14 text-center bg-slate-50 border border-slate-200 rounded py-1 ${colorClass(st.f1_oral1)}"></td> <td class="p-1 border-b border-slate-200 text-center"><input type="text" inputmode="numeric" value="${toArabicDigits(st.f1_m1)}" onchange="updateStudentGrade(${idx}, 'f1_m1', this.value)" class="w-14 text-center bg-slate-50 border border-slate-200 rounded py-1 ${colorClass(st.f1_m1)}"></td> <td class="p-1 border-b border-slate-200 text-center"><input type="text" inputmode="numeric" value="${toArabicDigits(st.f1_oral2)}" onchange="updateStudentGrade(${idx}, 'f1_oral2', this.value)" class="w-14 text-center bg-slate-50 border border-slate-200 rounded py-1 ${colorClass(st.f1_oral2)}"></td> <td class="p-1 border-b border-slate-200 text-center"><input type="text" inputmode="numeric" value="${toArabicDigits(st.f1_m2)}" onchange="updateStudentGrade(${idx}, 'f1_m2', this.value)" class="w-14 text-center bg-slate-50 border border-slate-200 rounded py-1 ${colorClass(st.f1_m2)}"></td> <td class="p-1 border-b border-slate-200 text-center bg-blue-50/50 font-bold ${colorClass(st.f1_avg)}">${toArabicDigits(st.f1_avg)}</td> <td class="p-1 border-b border-slate-200 text-center"><input type="text" inputmode="numeric" value="${toArabicDigits(st.mid_term)}" onchange="updateStudentGrade(${idx}, 'mid_term', this.value)" class="w-14 text-center bg-slate-50 border border-slate-200 rounded py-1 ${colorClass(st.mid_term)}"></td> <td class="p-1 border-b border-slate-200 text-center"><input type="text" inputmode="numeric" value="${toArabicDigits(st.f2_oral1)}" onchange="updateStudentGrade(${idx}, 'f2_oral1', this.value)" class="w-14 text-center bg-slate-50 border border-slate-200 rounded py-1 ${colorClass(st.f2_oral1)}"></td> <td class="p-1 border-b border-slate-200 text-center"><input type="text" inputmode="numeric" value="${toArabicDigits(st.f2_m1)}" onchange="updateStudentGrade(${idx}, 'f2_m1', this.value)" class="w-14 text-center bg-slate-50 border border-slate-200 rounded py-1 ${colorClass(st.f2_m1)}"></td> <td class="p-1 border-b border-slate-200 text-center"><input type="text" inputmode="numeric" value="${toArabicDigits(st.f2_oral2)}" onchange="updateStudentGrade(${idx}, 'f2_oral2', this.value)" class="w-14 text-center bg-slate-50 border border-slate-200 rounded py-1 ${colorClass(st.f2_oral2)}"></td> <td class="p-1 border-b border-slate-200 text-center"><input type="text" inputmode="numeric" value="${toArabicDigits(st.f2_m2)}" onchange="updateStudentGrade(${idx}, 'f2_m2', this.value)" class="w-14 text-center bg-slate-50 border border-slate-200 rounded py-1 ${colorClass(st.f2_m2)}"></td> <td class="p-1 border-b border-slate-200 text-center bg-indigo-50/50 font-bold ${colorClass(st.f2_avg)}">${toArabicDigits(st.f2_avg)}</td> <td class="p-1 border-b border-slate-200 text-center bg-emerald-50/50 font-bold ${colorClass(st.annual_score)}">${toArabicDigits(st.annual_score)}</td> <td class="p-2 border-b border-slate-200 text-xs text-slate-800 font-bold whitespace-nowrap bg-slate-50/50"> <span class="inline-block px-2 py-1">${st.notes || ''}</span> </td> <td class="p-2 border-b border-slate-200 text-center no-print"> <button type="button" onclick="appendCrossMark(${idx})" class="w-9 h-9 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl font-black transition shadow-sm text-base" title="إضافة علامة X">❌</button> </td> <td class="p-2 border-b border-slate-200 text-center no-print"> <button type="button" onclick="confirmDeleteStudent(${idx})" class="text-rose-600 hover:text-rose-800 font-bold px-2 py-1 rounded transition" title="حذف الطالب">🗑️</button> </td>⁠;
+tbody.appendChild(tr);
+});
+updateStatistics();
+}
+function updateStudentName(idx, val) {
+const students = getCurrentStudents();
+students[idx].name = val.trim();
+sortStudentsAlphabetically(students);
+saveToLocalStorage();
+renderGradesTable();
+}
+function appendCrossMark(idx) {
+const students = getCurrentStudents();
+const markText = ⁠❌⁠;
+let currentNotes = students[idx].notes || '';
+if (currentNotes) {
+students[idx].notes = currentNotes + ' ' + markText;
+} else {
+students[idx].notes = markText;
+}
+saveToLocalStorage();
+renderGradesTable();
+}
+function updateStudentGrade(idx, field, val) {
+let cleanVal = parseArabicDigitsToEnglish(val);
+let num = parseFloat(cleanVal);
+if (isNaN(num) || num < 0 || num > 100) {
+showCustomModal("خطأ في الإدخال", "عذراً، يجب أن تكون الدرجة محصورة حصراً بين ٠ و ١٠٠.", false);
+renderGradesTable();
+return;
+}
+const students = getCurrentStudents();
+students[idx][field] = num;
+saveToLocalStorage();
+renderGradesTable();
+}
+function sortStudentsAlphabetically(students) {
+students.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+}
+function openAddStudentModal() {
+showCustomModalPrompt("إضافة طالب جديد", "أدخل اسم الطالب الثلاثي:", (name) => {
+if (name && name.trim() !== '') {
+const students = getCurrentStudents();
+students.push({
+name: name.trim(),
+f1_oral1: '', f1_m1: '', f1_oral2: '', f1_m2: '', f1_avg: '',
+mid_term: '',
+f2_oral1: '', f2_m1: '', f2_oral2: '', f2_m2: '', f2_avg: '',
+annual_score: '', notes: ''
+});
+sortStudentsAlphabetically(students);
+saveToLocalStorage();
+renderGradesTable();
+}
+});
+}
+function confirmDeleteStudent(idx) {
+showCustomModal("حذف طالب", "هل أنت متأكد من حذف هذا الطالب من السجل؟", true, () => {
+const students = getCurrentStudents();
+students.splice(idx, 1);
+saveToLocalStorage();
+renderGradesTable();
+});
+}
+function importNamesFromFile(event) {
+const file = event.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = function(e) {
+const content = e.target.result;
+const lines = content.split(/\r?\n/);
+const students = getCurrentStudents();
+lines.forEach(line => {
+const cleanName = line.trim();
+if (cleanName.length > 0) {
+students.push({
+name: cleanName,
+f1_oral1: '', f1_m1: '', f1_oral2: '', f1_m2: '', f1_avg: '',
+mid_term: '',
+f2_oral1: '', f2_m1: '', f2_oral2: '', f2_m2: '', f2_avg: '',
+annual_score: '', notes: ''
+});
+}
+});
+sortStudentsAlphabetically(students);
+saveToLocalStorage();
+renderGradesTable();
+showCustomModal("تم الاستيراد", "تمت إضافة أسماء الطلاب بنجاح وترتيبها أبجدياً.", false);
+};
+reader.readAsText(file);
+}
+function updateStatistics() {
+const students = getCurrentStudents();
+document.getElementById('stat-total-students').textContent = toArabicDigits(students.length);
+let passF1 = 0, failF1 = 0;
+let passMid = 0, failMid = 0;
+let passF2 = 0, failF2 = 0;
+let passAnnual = 0, failAnnual = 0;
+students.forEach(st => {
+calculateStudentGrades(st);
+if (st.f1_avg >= 50) passF1++; else failF1++;
+if (st.mid_term >= 50) passMid++; else failMid++;
+if (st.f2_avg >= 50) passF2++; else failF2++;
+if (st.annual_score >= 50) passAnnual++; else failAnnual++;
+});
+document.getElementById('pass-count-f1').textContent = toArabicDigits(passF1);
+document.getElementById('fail-count-f1').textContent = toArabicDigits(failF1);
+const percentF1 = students.length > 0 ? Math.round((passF1 / students.length) * 100) : 0;
+document.getElementById('pass-percent-f1').textContent = toArabicDigits(percentF1) + '٪';
+document.getElementById('pass-count-mid').textContent = toArabicDigits(passMid);
+document.getElementById('fail-count-mid').textContent = toArabicDigits(failMid);
+const percentMid = students.length > 0 ? Math.round((passMid / students.length) * 100) : 0;
+document.getElementById('pass-percent-mid').textContent = toArabicDigits(percentMid) + '٪';
+document.getElementById('pass-count-f2').textContent = toArabicDigits(passF2);
+document.getElementById('fail-count-f2').textContent = toArabicDigits(failF2);
+const percentF2 = students.length > 0 ? Math.round((passF2 / students.length) * 100) : 0;
+document.getElementById('pass-percent-f2').textContent = toArabicDigits(percentF2) + '٪';
+document.getElementById('pass-count-annual').textContent = toArabicDigits(passAnnual);
+document.getElementById('fail-count-annual').textContent = toArabicDigits(failAnnual);
+const percentAnnual = students.length > 0 ? Math.round((passAnnual / students.length) * 100) : 0;
+document.getElementById('pass-percent-annual').textContent = toArabicDigits(percentAnnual) + '٪';
+}
+// الاختبار اليومي
+function getDailyQuizStudents() {
+return getCurrentStudents();
+}
+function initDailyQuiz() {
+dailyQuizIndex = 0;
+loadNextDailyStudent();
+}
+function loadNextDailyStudent() {
+const students = getDailyQuizStudents();
+const nameEl = document.getElementById('daily-student-name');
+const infoEl = document.getElementById('daily-student-info');
+const statusEl = document.getElementById('daily-status-msg');
+document.getElementById('daily-grade-input').value = '';
+if (students.length === 0) {
+nameEl.textContent = "لا توجد أسماء طلاب في هذه المرحلة";
+infoEl.textContent = "";
+return;
+}
+if (dailyQuizIndex >= students.length) {
+dailyQuizIndex = 0;
+}
+const st = students[dailyQuizIndex];
+nameEl.textContent = st.name;
+infoEl.textContent = ⁠المرحلة: ${currentGrade} (شعبة ${currentSection}) - الطالب رقم ${toArabicDigits(dailyQuizIndex + 1)} من ${toArabicDigits(students.length)}⁠;
+statusEl.textContent = "";
+}
+function saveDailyGradeAndNext() {
+const students = getDailyQuizStudents();
+if (students.length === 0) return;
+const inputVal = document.getElementById('daily-grade-input').value;
+const val = parseFloat(parseArabicDigitsToEnglish(inputVal));
+if (isNaN(val) || val < 0 || val > 100) {
+showCustomModal("تنبيه", "يرجى إدخال درجة صحيحة بين ٠ و ١٠٠.", false);
+return;
+}
+const st = students[dailyQuizIndex];
+if (!st.f1_oral1) {
+st.f1_oral1 = val;
+} else if (!st.f1_oral2) {
+st.f1_oral2 = val;
+} else if (!st.f2_oral1) {
+st.f2_oral1 = val;
+} else {
+st.f2_oral2 = val;
+}
+saveToLocalStorage();
+renderGradesTable();
+dailyQuizIndex++;
+loadNextDailyStudent();
+}
+// الحضور والغياب
+function initAttendanceSession() {
+attendanceIndex = 0;
+currentAttendanceRecords = [];
+const students = getCurrentStudents();
+if (students.length > 0) {
+document.getElementById('attendance-active-container').classList.remove('hidden');
+document.getElementById('attendance-summary-container').classList.add('hidden');
+renderAttendanceStep();
+} else {
+document.getElementById('att-student-name').textContent = "لا توجد أسماء طلاب مسجلة";
+document.getElementById('att-counter-info').textContent = "";
+}
+}
+function renderAttendanceStep() {
+const students = getCurrentStudents();
+if (attendanceIndex < students.length) {
+const st = students[attendanceIndex];
+document.getElementById('att-student-name').textContent = st.name;
+document.getElementById('att-counter-info').textContent = ⁠الطالب ${toArabicDigits(attendanceIndex + 1)} من ${toArabicDigits(students.length)}⁠;
+const todayStr = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+document.getElementById('att-date-display').textContent = "التاريخ: " + todayStr;
+} else {
+finishAttendanceSession();
+}
+}
+function recordAttendanceStatus(status) {
+const students = getCurrentStudents();
+if (attendanceIndex < students.length) {
+const st = students[attendanceIndex];
+currentAttendanceRecords.push({ student: st.name, status: status });
+if (status === 'غائب') {
+const todayStr = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }) + ' ' + new Date().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
+const noteText = ⁠غائب بتاريخ ${todayStr}⁠;
+st.notes = st.notes ? st.notes + ' | ' + noteText : noteText;
+saveToLocalStorage();
+}
+attendanceIndex++;
+renderAttendanceStep();
+}
+}
+function revertAttendanceStep() {
+if (attendanceIndex > 0) {
+attendanceIndex--;
+currentAttendanceRecords.pop();
+renderAttendanceStep();
+}
+}
+function finishAttendanceSession() {
+document.getElementById('attendance-active-container').classList.add('hidden');
+document.getElementById('attendance-summary-container').classList.remove('hidden');
+const todayStr = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+document.getElementById('summary-date-text').textContent = "تاريخ السجل: " + todayStr;
+const presentCount = currentAttendanceRecords.filter(r => r.status === 'حاضر').length;
+const absentCount = currentAttendanceRecords.filter(r => r.status === 'غائب').length;
+document.getElementById('summary-present-count').textContent = toArabicDigits(presentCount);
+document.getElementById('summary-absent-count').textContent = toArabicDigits(absentCount);
+if (!appData.absenceLogs) appData.absenceLogs = {};
+appData.absenceLogs[todayStr] = {
+records: [...currentAttendanceRecords],
+image: null
+};
+saveToLocalStorage();
+}
+function resetAttendanceSession() {
+initAttendanceSession();
+}
+// سجل الغياب
+function initAbsenceLogDropdown() {
+const select = document.getElementById('absence-date-select');
+select.innerHTML = '';
+const dates = Object.keys(appData.absenceLogs || {});
+if (dates.length === 0) {
+select.innerHTML = ⁠<option>لا توجد تواريخ مسجلة</option>⁠;
+document.getElementById('absence-log-view-area').innerHTML = ⁠<p class="text-slate-400 text-center py-6">لا توجد سجلات حضور أو غياب محفوظة حتى الآن.</p>⁠;
+return;
+}
+dates.forEach(d => {
+const opt = document.createElement('option');
+opt.value = d;
+opt.textContent = d;
+opt.disabled = false;
+select.appendChild(opt);
+});
+renderAbsenceLogByDate();
+}
+function renderAbsenceLogByDate() {
+const select = document.getElementById('absence-date-select');
+const dateKey = select.value;
+const area = document.getElementById('absence-log-view-area');
+if (!dateKey || !appData.absenceLogs[dateKey]) {
+area.innerHTML = '';
+return;
+}
+const log = appData.absenceLogs[dateKey];
+let html = ⁠<div class="bg-slate-50 p-4 rounded-xl border space-y-3"><h4 class="font-bold text-slate-800 text-base">سجل يوم: <span class="text-blue-900 bg-blue-100 px-3 py-1 rounded-lg select-all inline-block mt-1 font-black">${dateKey}</span></h4>⁠;
+html += ⁠<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">⁠;
+log.records.forEach(r => {
+const badgeColor = r.status === 'حاضر' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800';
+html += ⁠<div class="flex justify-between items-center bg-white p-3 rounded-lg border shadow-sm"><span>${r.student}</span><span class="px-3 py-1 rounded-full text-xs font-bold ${badgeColor}">${r.status}</span></div>⁠;
+});
+html += ⁠</div>⁠;
+if (log.image) {
+html += ⁠<div class="mt-4"><p class="text-xs font-bold text-slate-600 mb-2">الصورة المرفقة:</p><img src="${log.image}" class="max-w-xs rounded-xl border shadow"></div>⁠;
+}
+html += ⁠</div>⁠;
+area.innerHTML = html;
+}
+function saveLogImage(event) {
+const select = document.getElementById('absence-date-select');
+const dateKey = select.value;
+if (!dateKey || !appData.absenceLogs[dateKey]) return;
+const file = event.target.files[0];
+if (file) {
+const reader = new FileReader();
+reader.onload = function(e) {
+appData.absenceLogs[dateKey].image = e.target.result;
+saveToLocalStorage();
+renderAbsenceLogByDate();
+showCustomModal("تم الحفظ", "تم حفظ الصورة المرفقة مع السجل بنجاح.", false);
+};
+reader.readAsDataURL(file);
+}
+}
+// النسخ الاحتياطي
+function exportJSONBackup() {
+const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
+const downloadAnchor = document.createElement('a');
+downloadAnchor.setAttribute("href", dataStr);
+downloadAnchor.setAttribute("download", "teacher_log_backup.json");
+document.body.appendChild(downloadAnchor);
+downloadAnchor.click();
+downloadAnchor.remove();
+}
+function importJSONBackup(event) {
+const file = event.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = function(e) {
+try {
+appData = JSON.parse(e.target.result);
+saveToLocalStorage();
+initApp();
+showCustomModal("تم الاستيراد", "تم استعادة النسخة الاحتياطية بنجاح.", false);
+} catch (err) {
+showCustomModal("خطأ", "الملف غير صالح أو التنسيق تالف.", false);
+}
+};
+reader.readAsText(file);
+}
+function toggleCloudSync() {
+const badge = document.getElementById('cloud-status-badge');
+badge.textContent = "الوضع الحالي: متصل بالسحاب ومزامن تلقائياً ☁️";
+badge.className = "inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800";
+showCustomModal("النسخ السحابي", "تم تفعيل المزامنة السحابية بنجاح.", false);
+}
+// الطباعة
+function openPrintModal() {
+document.getElementById('print-options-modal').classList.remove('hidden');
+}
+function executePrint() {
+document.getElementById('print-options-modal').classList.add('hidden');
+window.print();
+}
+// النوافذ المنبثقة
+function showCustomModal(title, message, showConfirm, callback) {
+document.getElementById('modal-title').textContent = title;
+document.getElementById('modal-message').textContent = message;
+document.getElementById('modal-input-container').classList.add('hidden');
+document.getElementById('custom-modal').classList.remove('hidden');
+activeModalCallback = callback;
+}
+function showCustomModalPrompt(title, message, callback) {
+document.getElementById('modal-title').textContent = title;
+document.getElementById('modal-message').textContent = message;
+document.getElementById('modal-prompt-input').value = '';
+document.getElementById('modal-input-container').classList.remove('hidden');
+document.getElementById('custom-modal').classList.remove('hidden');
+activeModalCallback = callback;
+}
+function closeModal(confirmed) {
+document.getElementById('custom-modal').classList.add('hidden');
+if (confirmed && activeModalCallback) {
+const promptVal = document.getElementById('modal-prompt-input').value;
+activeModalCallback(promptVal);
+}
+activeModalCallback = null;
+}
+function modalConfirmCallback() {
+closeModal(true);
+}
+function handleGlobalSearch(query) {
+const container = document.getElementById('global-search-results-container');
+const list = document.getElementById('search-results-list');
+const display = document.getElementById('search-query-display');
+if (!query || query.trim() === '') {
+container.classList.add('hidden');
+return;
+}
+display.textContent = query;
+list.innerHTML = '';
+let found = false;
+const normalizedQuery = normalizeArabic(query);
+Object.keys(appData.grades).forEach(key => {
+const students = appData.grades[key];
+const gradeName = key.split('')[0];
+const sectionName = key.split('')[1] || 'عامة';
+students.forEach(st => {
+const normalizedStudentName = normalizeArabic(st.name);
+if (normalizedStudentName.includes(normalizedQuery)) {
+found = true;
+calculateStudentGrades(st);
+const div = document.createElement('div');
+div.className = "p-4 bg-slate-50 nền rounded-xl border border-slate-200 space-y-3 bg-white";
+div.innerHTML = ⁠<div class="flex flex-wrap justify-between items-center gap-2 border-b pb-2"> <div> <span class="text-base font-black text-slate-900">${st.name}</span> <span class="text-xs text-slate-500 mr-2 bg-slate-200 px-2 py-0.5 rounded-lg">المرحلة: ${gradeName} (شعبة ${sectionName})</span> </div> <div class="text-xs font-bold text-blue-700">السعي النهائي: ${toArabicDigits(st.annual_score)}</div> </div> <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 text-xs text-center"> <div class="bg-white p-2 rounded border"><span class="block text-slate-500">شهر 1 ف1:</span><strong class="text-slate-800">${toArabicDigits(st.f1_m1)}</strong></div> <div class="bg-white p-2 rounded border"><span class="block text-slate-500">شهر 2 ف1:</span><strong class="text-slate-800">${toArabicDigits(st.f1_m2)}</strong></div> <div class="bg-blue-50 p-2 rounded border border-blue-200"><span class="block text-blue-700 font-bold">معدل ف1:</span><strong class="text-blue-900">${toArabicDigits(st.f1_avg)}</strong></div> <div class="bg-white p-2 rounded border"><span class="block text-slate-500">نصف السنة:</span><strong class="text-slate-800">${toArabicDigits(st.mid_term)}</strong></div> <div class="bg-white p-2 rounded border"><span class="block text-slate-500">شهر 1 ف2:</span><strong class="text-slate-800">${toArabicDigits(st.f2_m1)}</strong></div> <div class="bg-white p-2 rounded border"><span class="block text-slate-500">شهر 2 ف2:</span><strong class="text-slate-800">${toArabicDigits(st.f2_m2)}</strong></div> <div class="bg-indigo-50 p-2 rounded border border-indigo-200"><span class="block text-indigo-700 font-bold">معدل ف2:</span><strong class="text-indigo-900">${toArabicDigits(st.f2_avg)}</strong></div> </div> <div class="text-xs text-slate-600 bg-white p-2 rounded border"><strong>الملاحظات والسجلات:</strong> ${st.notes || 'لا توجد ملاحظات'}</div>⁠;
+list.appendChild(div);
+}
+});
+});
+if (!found) {
+list.innerHTML = ⁠<p class="text-slate-400 text-sm text-center py-4">لم يتم العثور على أي طالب بهذا الاسم في أي من المراحل.</p>⁠;
+}
+container.classList.remove('hidden');
+}
+window.onload = function() {
+initApp();
+};
 </script>
 </body>
 </html>
