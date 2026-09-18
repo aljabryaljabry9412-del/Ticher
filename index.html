@@ -13,8 +13,6 @@
 <link rel="apple-touch-icon" href="https://aljabryaljabry9412-del.github.io/Ticher/icon.jpeg?v=3">
 <link rel="icon" type="image/jpeg" href="https://aljabryaljabry9412-del.github.io/Ticher/icon.jpeg?v=3">
 
-<link rel="manifest" href='data:application/json,{"name":"سجل المدرس","short_name":"المدرس","start_url":"/Ticher/","display":"standalone","background_color":"#172554","theme_color":"#172554","icons":[{"src":"https://aljabryaljabry9412-del.github.io/Ticher/icon.jpeg?v=3","sizes":"192x192","type":"image/jpeg"},{"src":"https://aljabryaljabry9412-del.github.io/Ticher/icon.jpeg?v=3","sizes":"512x512","type":"image/jpeg"}]}'>
-
 <style>
 @font-face{font-family:NaskhLocal;src:local("Noto Naskh Arabic"),local("Noto Naskh Arabic UI"),local("Traditional Arabic")}
 :root{--navy:#172554;--blue:#2563eb;--bg:#f1f5f9;--card:#fff;--line:#cbd5e1;--red:#dc2626;--green:#15803d;--text:#0f172a}
@@ -166,7 +164,7 @@ function init(){
 function showTab(id){
   const target=document.getElementById(id);
   if(!target)return;
-  document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));
+  document.querySelectorAll(".wrap > section.tab").forEach(x=>x.classList.add("hidden"));
   target.classList.remove("hidden");
   document.querySelectorAll(".tabs button[data-tab]").forEach(b=>b.classList.remove("active"));
   const btn=document.querySelector('.tabs button[data-tab="'+id+'"]');
@@ -408,6 +406,7 @@ function printAbsence(kind){let date=document.getElementById("absenceDate").valu
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&quot;","'":"&#39;"}[m]))}
 function escAttr(s){return esc(s).replace(/"/g,"&quot;")}
 
+// تشغيل التهيئة الصحيحة للتبويبات والأقسام
 init();
 document.getElementById("nameModalInput").addEventListener("keydown",e=>{e.key==="Enter"&&submitNameModal();e.key==="Escape"&&closeModal("nameModal")});
 </script>
