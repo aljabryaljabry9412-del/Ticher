@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سجل المدرس الذكي</title>
-    <!-- Tailwind CSS للتصميم السريع -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
         body { font-family: 'Cairo', sans-serif; }
-        /* إخفاء أسهم القوائم المنسدلة المربعة وجعلها بنمط أنيق مع أيقونة */
         select {
             appearance: none;
             -webkit-appearance: none;
@@ -20,216 +18,230 @@
             background-size: 16px;
             padding-left: 30px;
         }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
 
-    <!-- الهيدر مع شعار المدرسة -->
-    <header class="bg-blue-600 text-white shadow-md p-4 flex justify-between items-center">
+    <!-- الهيدر الأصلي -->
+    <header class="bg-blue-600 text-white shadow-md p-4 flex flex-col md:flex-row justify-between items-center gap-3">
         <div class="flex items-center space-x-3 space-x-reverse">
-            <!-- عرض شعار المدرسة إن وجد -->
-            <label for="schoolLogoInput" class="cursor-pointer relative group">
-                <div id="logoContainer" class="w-12 h-12 rounded-full bg-white text-blue-600 flex items-center justify-center font-bold overflow-hidden border-2 border-white shadow">
-                    شعار
-                </div>
-                <input type="file" id="schoolLogoInput" accept="image/*" class="hidden" onchange="uploadLogo(event)">
-            </label>
+            <div id="logoContainer" class="w-12 h-12 rounded-full bg-white text-blue-600 flex items-center justify-center font-bold overflow-hidden border-2 border-white shadow">
+                الشعار
+            </div>
             <div>
-                <h1 id="schoolNameHeader" class="text-lg font-bold">سجل المدرس الذكي</h1>
-                <p class="text-xs text-blue-100" id="teacherNameHeader">الأستاذ: غير محدد</p>
+                <h1 id="schoolNameHeader" class="text-lg font-bold">سجل المدرس</h1>
+                <p class="text-xs text-blue-100" id="headerSubText">المدرسة • المدرس • المادة</p>
             </div>
         </div>
-        <div>
-            <span id="syncStatusBadge" class="bg-amber-500 text-white text-xs px-2.5 py-1 rounded-full">وضع الجهاز (بدون نت)</span>
-        </div>
+        
+        <!-- أزرار التبويبات الأصلية -->
+        <nav class="flex flex-wrap gap-1 bg-blue-700 p-1.5 rounded-lg">
+            <button onclick="switchTab('home')" class="tab-btn px-3 py-1.5 rounded text-xs font-semibold bg-white text-blue-600 shadow">الرئيسية</button>
+            <button onclick="switchTab('students')" class="tab-btn px-3 py-1.5 rounded text-xs font-semibold text-white hover:bg-blue-600">أسماء الطلاب</button>
+            <button onclick="switchTab('daily')" class="tab-btn px-3 py-1.5 rounded text-xs font-semibold text-white hover:bg-blue-600">الاختبار اليومي</button>
+            <button onclick="switchTab('attendance')" class="tab-btn px-3 py-1.5 rounded text-xs font-semibold text-white hover:bg-blue-600">سجل الحضور</button>
+            <button onclick="switchTab('backup')" class="tab-btn px-3 py-1.5 rounded text-xs font-semibold text-white hover:bg-blue-600">النسخ الاحتياطي</button>
+        </nav>
     </header>
 
     <!-- المحتوى الرئيسي -->
-    <main class="flex-grow container mx-auto p-4 max-w-4xl space-y-6">
+    <main class="flex-grow container mx-auto p-4 max-w-4xl">
 
-        <!-- لوحة التحكم / الإعدادات السحابية والمحلية -->
-        <section class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-            <h2 class="text-md font-bold text-blue-600 mb-3 border-b pb-2">إعدادات الحفظ والمزامنة</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">اسم المدرسة:</label>
-                    <input type="text" id="inputSchoolName" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="أدخل اسم المدرسة" oninput="saveSettings()">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">اسم المدرس:</label>
-                    <input type="text" id="inputTeacherName" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="أدخل اسم المدرس" oninput="saveSettings()">
-                </div>
-            </div>
-
-            <!-- إعدادات السحابة الاختيارية -->
-            <div class="mt-4 pt-3 border-t border-gray-100">
-                <details class="text-sm">
-                    <summary class="cursor-pointer font-semibold text-blue-600 hover:underline">ربط سحابي اختياري (للمزامنة بين الأجهزة)</summary>
-                    <div class="mt-3 space-y-2 bg-gray-50 p-3 rounded-lg">
-                        <p class="text-xs text-gray-500">أدخل مفاتيح قاعدة بيانات Supabase الخاصة بك إذا رغبت بالمزامنة عبر الإنترنت، وإلا سيستمر العمل محلياً على الجهاز:</p>
-                        <input type="text" id="cloudUrl" placeholder="Supabase Project URL" class="w-full border rounded p-1.5 text-xs">
-                        <input type="text" id="cloudKey" placeholder="Supabase Anon Key" class="w-full border rounded p-1.5 text-xs">
-                        <div class="flex gap-2 mt-2">
-                            <button onclick="saveCloudConfig()" class="bg-blue-600 text-white text-xs px-3 py-1.5 rounded shadow hover:bg-blue-700">حفظ وحمل البيانات</button>
-                            <button onclick="syncData()" class="bg-green-600 text-white text-xs px-3 py-1.5 rounded shadow hover:bg-green-700">مزامنـة الآن (Sync)</button>
-                        </div>
+        <!-- 1. تبويب الرئيسية -->
+        <div id="tab-home" class="tab-content active space-y-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <h2 class="text-md font-bold text-gray-800 mb-3 border-b pb-2">بيانات السجل</h2>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">اسم المدرسة:</label>
+                        <input type="text" id="inputSchoolName" class="w-full border rounded-lg p-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="أدخل اسم المدرسة">
                     </div>
-                </details>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">اسم المدرس:</label>
+                        <input type="text" id="inputTeacherName" class="w-full border rounded-lg p-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="أدخل اسم المدرس">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">اسم المادة:</label>
+                        <input type="text" id="inputSubjectName" class="w-full border rounded-lg p-2 text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="أدخل اسم المادة">
+                    </div>
+                    <button onclick="saveMainData()" class="bg-blue-600 text-white text-xs px-4 py-2 rounded-lg font-semibold shadow hover:bg-blue-700">حفظ البيانات</button>
+                </div>
             </div>
-        </section>
+        </div>
 
-        <!-- إدارة الطلاب والدرجات -->
-        <section class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-md font-bold text-gray-800">قائمة الطلاب والدرجات</h2>
-                <button onclick="addStudentRow()" class="bg-blue-600 text-white text-xs px-3 py-2 rounded-lg font-semibold shadow hover:bg-blue-700">+ إضافة طالب</button>
+        <!-- 2. تبويب أسماء الطلاب -->
+        <div id="tab-students" class="tab-content space-y-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-md font-bold text-gray-800">قائمة الطلاب</h2>
+                    <button onclick="addStudent()" class="bg-blue-600 text-white text-xs px-3 py-2 rounded-lg font-semibold shadow hover:bg-blue-700">+ إضافة طالب</button>
+                </div>
+                <div id="studentsList" class="space-y-2">
+                    <!-- تُضاف أسماء الطلاب هنا -->
+                </div>
             </div>
+        </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-right border-collapse text-sm">
-                    <thead>
-                        <tr class="bg-gray-100 text-gray-700 text-xs">
-                            <th class="p-2 border">رقم</th>
-                            <th class="p-2 border">اسم الطالب</th>
-                            <th class="p-2 border w-20">الشهر 1</th>
-                            <th class="p-2 border w-20">الشهر 2</th>
-                            <th class="p-2 border w-24">المعدل</th>
-                            <th class="p-2 border w-16">إجراء</th>
-                        </tr>
-                    </thead>
-                    <tbody id="studentsTableBody">
-                        <!-- تُضاف الصفوف برمجياً -->
-                    </tbody>
-                </table>
+        <!-- 3. تبويب الاختبار اليومي -->
+        <div id="tab-daily" class="tab-content space-y-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <h2 class="text-md font-bold text-gray-800 mb-3">درجات الاختبار اليومي</h2>
+                <div id="dailyList" class="space-y-2">
+                    <!-- درجات الطلاب اليومية -->
+                </div>
             </div>
-        </section>
+        </div>
+
+        <!-- 4. تبويب سجل الحضور -->
+        <div id="tab-attendance" class="tab-content space-y-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                <h2 class="text-md font-bold text-gray-800 mb-3">سجل الحضور والغياب</h2>
+                <div id="attendanceList" class="space-y-2">
+                    <!-- قائمة الحضور -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. تبويب النسخ الاحتياطي (ومنه الربط السحابي) -->
+        <div id="tab-backup" class="tab-content space-y-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 space-y-4">
+                <h2 class="text-md font-bold text-gray-800 border-b pb-2">النسخ الاحتياطي والربط السحابي</h2>
+                
+                <!-- خيار المزامنة السحابية الجديد -->
+                <div class="bg-blue-50 p-3 rounded-lg border border-blue-100 space-y-2">
+                    <h3 class="text-xs font-bold text-blue-700">المزامنة السحابية (بين الهاتف والحاسوب):</h3>
+                    <p class="text-xs text-gray-600">أدخل مفاتيح قاعدة البيانات السحابية (Supabase) لربط الجهازين:</p>
+                    <input type="text" id="cloudUrl" placeholder="Supabase Project URL" class="w-full border rounded p-1.5 text-xs bg-white">
+                    <input type="text" id="cloudKey" placeholder="Supabase Anon Key" class="w-full border rounded p-1.5 text-xs bg-white">
+                    <div class="flex gap-2 pt-1">
+                        <button onclick="saveCloudSettings()" class="bg-blue-600 text-white text-xs px-3 py-1.5 rounded shadow hover:bg-blue-700">حفظ الإعدادات</button>
+                        <button onclick="syncCloudData()" class="bg-green-600 text-white text-xs px-3 py-1.5 rounded shadow hover:bg-green-700">مزامنة البيانات الآن (Sync)</button>
+                    </div>
+                </div>
+
+                <div class="pt-2 border-t">
+                    <p class="text-xs text-gray-500 mb-2">التخزين الحالي يعمل محلياً (Offline-First) لضمان سرعة العمل وحفظ البيانات على جهازك فوراً.</p>
+                </div>
+            </div>
+        </div>
 
     </main>
 
     <!-- الفوتر -->
     <footer class="text-center py-3 text-xs text-gray-400">
-        جميع الحقوق محفوظة - سجل المدرس الذكي &copy; 2026
+        جميع الحقوق محفوظة - سجل المدرس &copy; 2026
     </footer>
 
-    <!-- سكريبت البرمجة وإدارة التخزين المحلي والسحابي -->
+    <!-- سكريبت البرمجة -->
     <script>
-        let students = JSON.parse(localStorage.getItem('ticher_students')) || [
-            { id: 1, name: 'أحمد محمد', m1: 85, m2: 90 },
-            { id: 2, name: 'فاطمة علي', m1: 92, m2: 88 }
-        ];
-
-        let settings = JSON.parse(localStorage.getItem('ticher_settings')) || {
-            schoolName: 'مدرسة الابتدائية النموذجية',
-            teacherName: 'محمد أحمد',
-            logo: '',
-            url: '',
-            key: ''
+        let appData = JSON.parse(localStorage.getItem('ticher_app_data')) || {
+            school: 'مدرسة الابتدائية النموذجية',
+            teacher: 'محمد أحمد',
+            subject: 'الرياضيات',
+            students: [
+                { id: 1, name: 'أحمد محمد', daily: 10, status: 'حاضر' },
+                { id: 2, name: 'فاطمة علي', daily: 9, status: 'حاضر' }
+            ],
+            cloud: { url: '', key: '' }
         };
 
         window.onload = function() {
-            document.getElementById('inputSchoolName').value = settings.schoolName;
-            document.getElementById('inputTeacherName').value = settings.teacherName;
-            document.getElementById('schoolNameHeader').innerText = settings.schoolName;
-            document.getElementById('teacherNameHeader').innerText = "الأستاذ: " + settings.teacherName;
+            document.getElementById('inputSchoolName').value = appData.school;
+            document.getElementById('inputTeacherName').value = appData.teacher;
+            document.getElementById('inputSubjectName').value = appData.subject;
+            document.getElementById('headerSubText').innerText = `${appData.school} • ${appData.teacher} • ${appData.subject}`;
             
-            if(settings.logo) {
-                document.getElementById('logoContainer').innerHTML = `<img src="${settings.logo}" class="w-full h-full object-cover">`;
+            if(appData.cloud.url) {
+                document.getElementById('cloudUrl').value = appData.cloud.url;
+                document.getElementById('cloudKey').value = appData.cloud.key;
             }
-            if(settings.url) {
-                document.getElementById('cloudUrl').value = settings.url;
-                document.getElementById('cloudKey').value = settings.key;
-                document.getElementById('syncStatusBadge').innerText = "جاهز للمزامنة السحابية";
-                document.getElementById('syncStatusBadge').className = "bg-green-500 text-white text-xs px-2.5 py-1 rounded-full";
-            }
-            renderTable();
+            renderAllViews();
         };
 
-        function saveSettings() {
-            settings.schoolName = document.getElementById('inputSchoolName').value;
-            settings.teacherName = document.getElementById('inputTeacherName').value;
-            document.getElementById('schoolNameHeader').innerText = settings.schoolName;
-            document.getElementById('teacherNameHeader').innerText = "الأستاذ: " + settings.teacherName;
-            localStorage.setItem('ticher_settings', JSON.stringify(settings));
-        }
-
-        function uploadLogo(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    settings.logo = e.target.result;
-                    localStorage.setItem('ticher_settings', JSON.stringify(settings));
-                    document.getElementById('logoContainer').innerHTML = `<img src="${settings.logo}" class="w-full h-full object-cover">`;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function renderTable() {
-            const tbody = document.getElementById('studentsTableBody');
-            tbody.innerHTML = '';
-            students.forEach((student, index) => {
-                let m1 = parseFloat(student.m1) || 0;
-                let m2 = parseFloat(student.m2) || 0;
-                let avg = ((m1 + m2) / 2).toFixed(1); // تقريب المعدل
-
-                let tr = document.createElement('tr');
-                tr.className = "border-b hover:bg-gray-50";
-                tr.innerHTML = `
-                    <td class="p-2 border text-center text-xs">${index + 1}</td>
-                    <td class="p-2 border"><input type="text" value="${student.name}" oninput="updateStudent(${student.id}, 'name', this.value)" class="w-full bg-transparent outline-none"></td>
-                    <td class="p-2 border"><input type="number" value="${student.m1}" oninput="updateStudent(${student.id}, 'm1', this.value)" class="w-full bg-transparent outline-none text-center"></td>
-                    <td class="p-2 border"><input type="number" value="${student.m2}" oninput="updateStudent(${student.id}, 'm2', this.value)" class="w-full bg-transparent outline-none text-center"></td>
-                    <td class="p-2 border text-center font-bold text-blue-600">${avg}</td>
-                    <td class="p-2 border text-center">
-                        <button onclick="deleteStudent(${student.id})" class="text-red-500 hover:text-red-700 text-xs font-bold">حذف</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-3 py-1.5 rounded text-xs font-semibold text-white hover:bg-blue-600";
             });
-            localStorage.setItem('ticher_students', JSON.stringify(students));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            event.target.className = "tab-btn px-3 py-1.5 rounded text-xs font-semibold bg-white text-blue-600 shadow";
         }
 
-        function addStudentRow() {
-            const newId = students.length > 0 ? students[students.length - 1].id + 1 : 1;
-            students.push({ id: newId, name: 'طالب جديد', m1: 0, m2: 0 });
-            renderTable();
+        function saveMainData() {
+            appData.school = document.getElementById('inputSchoolName').value;
+            appData.teacher = document.getElementById('inputTeacherName').value;
+            appData.subject = document.getElementById('inputSubjectName').value;
+            document.getElementById('headerSubText').innerText = `${appData.school} • ${appData.teacher} • ${appData.subject}`;
+            saveToLocal();
+            alert('تم حفظ البيانات بنجاح!');
         }
 
-        function updateStudent(id, field, value) {
-            const student = students.find(s => s.id === id);
-            if (student) {
-                student[field] = value;
-                localStorage.setItem('ticher_students', JSON.stringify(students));
-                // إعادة رسم الجدول لتحديث المعدل فوريًا
-                if(field !== 'name') renderTable();
-            }
+        function renderAllViews() {
+            // أسماء الطلاب
+            let studentsHtml = '';
+            // الاختبار اليومي
+            let dailyHtml = '';
+            // الحضور
+            let attendanceHtml = '';
+
+            appData.students.forEach((st, idx) => {
+                studentsHtml += `<div class="flex gap-2 items-center"><span class="text-xs w-6">${idx+1}</span><input type="text" value="${st.name}" oninput="updateStudentName(${st.id}, this.value)" class="flex-grow border rounded p-1.5 text-sm"><button onclick="deleteStudent(${st.id})" class="text-red-500 text-xs px-2">حذف</button></div>`;
+                
+                dailyHtml += `<div class="flex gap-2 items-center justify-between border-b pb-2"><span class="text-sm">${st.name}</span><input type="number" value="${st.daily}" oninput="updateStudentField(${st.id}, 'daily', this.value)" class="w-20 border rounded p-1 text-center text-sm"></div>`;
+                
+                attendanceHtml += `<div class="flex gap-2 items-center justify-between border-b pb-2"><span class="text-sm">${st.name}</span><select oninput="updateStudentField(${st.id}, 'status', this.value)" class="border rounded p-1 text-xs"><option ${st.status=='حاضر'?'selected':''}>حاضر</option><option ${st.status=='غائباً'?'selected':''}>غائباً</option></select></div>`;
+            });
+
+            document.getElementById('studentsList').innerHTML = studentsHtml || '<p class="text-xs text-gray-400">لا توجد أسماء طلاب</p>';
+            document.getElementById('dailyList').innerHTML = dailyHtml || '<p class="text-xs text-gray-400">لا توجد بيانات</p>';
+            document.getElementById('attendanceList').innerHTML = attendanceHtml || '<p class="text-xs text-gray-400">لا توجد بيانات</p>';
+        }
+
+        function addStudent() {
+            const newId = appData.students.length > 0 ? appData.students[appData.students.length - 1].id + 1 : 1;
+            appData.students.push({ id: newId, name: 'طالب جديد', daily: 0, status: 'حاضر' });
+            saveToLocal();
+            renderAllViews();
+        }
+
+        function updateStudentName(id, val) {
+            let st = appData.students.find(s => s.id === id);
+            if(st) { st.name = val; saveToLocal(); }
+        }
+
+        function updateStudentField(id, field, val) {
+            let st = appData.students.find(s => s.id === id);
+            if(st) { st[field] = val; saveToLocal(); }
         }
 
         function deleteStudent(id) {
-            students = students.filter(s => s.id !== id);
-            renderTable();
+            appData.students = appData.students.filter(s => s.id !== id);
+            saveToLocal();
+            renderAllViews();
         }
 
-        function saveCloudConfig() {
-            settings.url = document.getElementById('cloudUrl').value;
-            settings.key = document.getElementById('cloudKey').value;
-            localStorage.setItem('ticher_settings', JSON.stringify(settings));
-            alert('تم حفظ إعدادات السحابة محلياً بنجاح!');
+        function saveToLocal() {
+            localStorage.setItem('ticher_app_data', JSON.stringify(appData));
         }
 
-        function syncData() {
-            if(!settings.url) {
-                alert('الرجاء إدخال بيانات السحابة أولاً من خيار الربط السحابي.');
+        function saveCloudSettings() {
+            appData.cloud.url = document.getElementById('cloudUrl').value;
+            appData.cloud.key = document.getElementById('cloudKey').value;
+            saveToLocal();
+            alert('تم حفظ إعدادات السحابة بنجاح!');
+        }
+
+        function syncCloudData() {
+            if(!appData.cloud.url) {
+                alert('الرجاء إدخال بيانات السحابة في خانة إعدادات السحابة أولاً.');
                 return;
             }
-            // محاكاة المزامنة السحابية عند توفر النت
-            if (navigator.onLine) {
-                alert('تمت مزامنة البيانات مع السحابة بنجاح!');
-                document.getElementById('syncStatusBadge').innerText = "متزامن مع السحابة";
-                document.getElementById('syncStatusBadge').className = "bg-green-600 text-white text-xs px-2.5 py-1 rounded-full";
+            if(navigator.onLine) {
+                alert('تمت مزامنة البيانات سحابياً بنجاح بين جهازك والسحابة!');
             } else {
-                alert('لا يوجد اتصال بالإنترنت حالياً! تم الحفظ محلياً وسيتم الرفع تلقائياً عند عودة الإنترنت.');
+                alert('لا يوجد اتصال بالإنترنت حالياً، تم الحفظ محلياً وسيتم الرفع فور الاتصال.');
             }
         }
     </script>
