@@ -52,12 +52,12 @@ td input{width:48px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 2px;t
 <header><h1>سجل المدرس</h1><div class="header-meta" id="headerMeta">المدرسة • المدرس • المادة</div></header>
 <div class="wrap">
 <div class="tabs no-print">
-<button type="button" data-tab="home" class="active">الرئيسية</button>
-<button type="button" data-tab="students">أسماء الطلاب</button>
-<button type="button" data-tab="daily">الاختبار اليومي</button>
-<button type="button" data-tab="attendance">سجل الحضور</button>
-<button type="button" data-tab="absence">سجل الغياب</button>
-<button type="button" data-tab="backup">النسخ الاحتياطي</button>
+<button type="button" onclick="showTab('home')" class="active">الرئيسية</button>
+<button type="button" onclick="showTab('students')">أسماء الطلاب</button>
+<button type="button" onclick="showTab('daily')">الاختبار اليومي</button>
+<button type="button" onclick="showTab('attendance')">سجل الحضور</button>
+<button type="button" onclick="showTab('absence')">سجل الغياب</button>
+<button type="button" onclick="showTab('backup')">النسخ الاحتياطي</button>
 </div>
 <section id="home" class="tab">
 <div class="card"><h2 class="section-title">بيانات السجل</h2><div class="grid">
@@ -80,7 +80,7 @@ td input{width:48px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 2px;t
 
 <div class="card" id="stageCard">
   <div class="header-action-row">
-    <h2 class="section-title">الشعب في المرحلة: <span id="stageTitle"></span></h2>
+    <h2 class="section-title">الشعبة في المرحلة: <span id="stageTitle"></span></h2>
     <select class="action-select" onchange="handleClassAction(this)">
       <option value="" selected disabled>⋮</option>
       <option value="add">+ إضافة شعبة جديدة</option>
@@ -158,13 +158,6 @@ function init(){
   renderStudents();
   resetDaily();
   updateHeader();
-  
-  document.querySelectorAll(".tabs button[data-tab]").forEach(b=>{
-    b.addEventListener("click",function(e){
-      e.preventDefault();
-      showTab(this.getAttribute("data-tab"));
-    });
-  });
 }
 
 function showTab(id){
@@ -173,8 +166,16 @@ function showTab(id){
   document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));
   target.classList.remove("hidden");
   document.querySelectorAll(".tabs button[data-tab]").forEach(b=>b.classList.remove("active"));
-  const btn=document.querySelector('.tabs button[data-tab="'+id+'"]');
-  if(btn)btn.classList.add("active");
+  
+  // Update active class on buttons based on their onclick attributes
+  document.querySelectorAll(".tabs button").forEach(b=>{
+    if(b.getAttribute("onclick")?.includes("'"+id+"'")){
+      b.classList.add("active");
+    } else {
+      b.classList.remove("active");
+    }
+  });
+
   if(id==="students")renderStudents();
   if(id==="daily")resetDaily();
   if(id==="absence")renderAbsence();
