@@ -10,13 +10,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>سجل المدرس</title>
 
-<!-- ربط الأيقونة المرفوعة icon.png -->
+<!-- ربط الأيقونة المرفوعة icon.jpeg -->
 <link rel="apple-touch-icon" href="https://aljabryaljabry9412-del.github.io/Ticher/icon.jpeg?v=3">
 <link rel="icon" type="image/jpeg" href="https://aljabryaljabry9412-del.github.io/Ticher/icon.jpeg?v=3">
 
 <link rel="manifest" href='data:application/json,{"name":"سجل المدرس","short_name":"المدرس","start_url":"/Ticher/","display":"standalone","background_color":"#172554","theme_color":"#172554","icons":[{"src":"https://aljabryaljabry9412-del.github.io/Ticher/icon.jpeg?v=3","sizes":"192x192","type":"image/jpeg"},{"src":"https://aljabryaljabry9412-del.github.io/Ticher/icon.jpeg?v=3","sizes":"512x512","type":"image/jpeg"}]}'>
-
-
 
 <style>
 @font-face{font-family:NaskhLocal;src:local("Noto Naskh Arabic"),local("Noto Naskh Arabic UI"),local("Traditional Arabic")}
@@ -33,7 +31,7 @@ button,.btn{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;font-we
 .stage-tabs,.class-tabs{display:flex;gap:7px;flex-wrap:wrap}.stage-item,.class-item{display:flex;gap:3px;align-items:center}.stage-item button:first-child,.class-item button:first-child{background:#dbeafe;color:#1e3a8a}
 .table-wrap{overflow:auto;max-height:65vh;border:1px solid var(--line);border-radius:12px;background:white}
 table{border-collapse:separate;border-spacing:0;min-width:1750px;width:max-content}th,td{border-left:1px solid var(--line);border-bottom:1px solid var(--line);padding:6px;text-align:center;white-space:nowrap;background:white}th{background:#e2e8f0;font-weight:bold;position:sticky;top:0;z-index:4}
-.sticky-seq{position:sticky;right:0;z-index:7;min-width:55px}.sticky-name{position:sticky;right:55px;z-index:6;min-width:180px}th.sticky-name,th.sticky-seq{background:#cbd5e1}
+.sticky-seq{position:sticky;right:0;z-index:7;width:32px!important;min-width:32px!important;max-width:32px!important;padding-left:2px!important;padding-right:2px!important}.sticky-name{position:sticky;right:32px;z-index:6;min-width:180px}th.sticky-name,th.sticky-seq{background:#cbd5e1}
 td input{width:75px;border:1px solid #cbd5e1;border-radius:6px;padding:6px;text-align:center;font-size:15px}.name-input{width:170px}
 .low{color:var(--red)!important;font-weight:bold}.calc{font-weight:bold}.summary{font-weight:bold}.summary td{background:#f8fafc}.summary-label{font-size:13px}.goodtxt{color:var(--green)}.badtxt{color:var(--red)}
 .daily-box{text-align:center;max-width:650px;margin:20px auto}.daily-name{font-size:32px;font-family:NaskhLocal,"Noto Naskh Arabic",serif;margin:15px}.daily-grade{font-size:30px;width:160px!important;text-align:center}.progress{height:10px;background:#e2e8f0;border-radius:20px;overflow:hidden}.progress>div{height:100%;background:var(--blue)}
@@ -44,7 +42,7 @@ td input{width:75px;border:1px solid #cbd5e1;border-radius:6px;padding:6px;text-
 .search-card .student-search-row{display:flex;gap:8px;align-items:center}.student-search-row input{flex:1;min-width:0;padding:11px 12px;border:1px solid #94a3b8;border-radius:9px;background:white;font-size:16px}.student-search-results{margin-top:14px}.search-result{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px;background:#f8fafc}.search-result h3{margin:0 0 8px;color:var(--navy)}.search-meta{color:#64748b;font-size:14px;margin-bottom:10px}.search-grades{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:7px}.search-grade{background:white;border:1px solid #e2e8f0;border-radius:8px;padding:7px;text-align:center}.search-grade b{display:block;font-size:13px;color:#475569;margin-bottom:3px}.search-notes{margin-top:10px;padding:9px;background:#fff;border-radius:8px;border-right:4px solid var(--blue);white-space:pre-wrap}.search-empty{padding:12px;border-radius:10px;background:#fee2e2;color:#991b1b;font-weight:bold}
 .print-area{display:none}
 @media print{body{background:white}.no-print,header,.tabs,.actions,.card:not(.print-card){display:none!important}.print-area{display:block!important}.print-card{display:block!important;border:0;box-shadow:none;padding:0}table{min-width:0;width:100%;font-size:9px}th,td{padding:3px}.table-wrap{overflow:visible;max-height:none;border:0}}
-@media(max-width:700px){header h1{font-size:27px}.wrap{padding:10px}.card{padding:12px}.sticky-name{min-width:135px;right:55px}.sticky-seq{right:0}.name-input{width:125px}}
+@media(max-width:700px){header h1{font-size:27px}.wrap{padding:10px}.card{padding:12px}.sticky-seq{width:28px!important;min-width:28px!important;max-width:28px!important}.sticky-name{min-width:135px;right:28px}.name-input{width:125px}}
 </style>
 </head>
 <body>
@@ -97,7 +95,7 @@ function addStudent(){let n=prompt("اسم الطالب:");if(!n||!n.trim())retu
 function importStudents(){document.getElementById("studentFile").click()}
 async function readStudentFile(input){let f=input.files[0];if(!f)return;try{let text=await f.text();let names=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);if(!names.length)throw 0;names.forEach(n=>{if(!currentClassObj().students.some(s=>s.name===n))currentClassObj().students.push(blankStudent(n))});sortStudents();saveDB();renderStudents();alert("تم استيراد "+arabicDigits(names.length)+" اسماً.\nملاحظة: ملفات DOC/DOCX القديمة قد تكون غير قابلة للاستخراج كنص مباشر في بعض المتصفحات؛ TXT هو الأكثر موثوقية.")}catch(e){alert("تعذر قراءة الملف. استخدم TXT إن كان DOC/DOCX غير قابل للقراءة.")}input.value=""}
 function validGrade(v){return v!==""&&Number.isFinite(Number(v))&&Number(v)>=0&&Number(v)<=100}function num(v){return v===""?0:Number(v)}function round10(x){return Math.round(x*10)/10}
-function calc(s){s.avg1=round10((num(s.oral1a)+num(s.month1a)+num(s.oral2a)+num(s.month2a))/4);s.avg2=round10((num(s.oral1b)+num(s.month1b)+num(s.oral2b)+num(s.month2b))/4);s.annual=round10((num(s.avg1)+num(s.mid)+num(s.avg2))/3)}
+function calc(s){s.avg1=Math.round((num(s.oral1a)+num(s.month1a)+num(s.oral2a)+num(s.month2a))/4);s.avg2=Math.round((num(s.oral1b)+num(s.month1b)+num(s.oral2b)+num(s.month2b))/4);s.annual=Math.round((num(s.avg1)+num(s.mid)+num(s.avg2))/3)}
 function renderStudents(){let c=currentClassObj();sortStudents();document.getElementById("studentsTitle").textContent=`${c.name} — ${c.students.length?arabicDigits(c.students.length):"٠"} طالب`;c.students.forEach(calc);let head=`<tr><th class="sticky-seq">ت</th><th class="sticky-name">اسم الطالب</th>${fields.map(f=>`<th>${f[1]}</th>`).join("")}<th>ملاحظات</th></tr>`;let rows=c.students.map((s,i)=>`<tr><td class="sticky-seq">${arabicDigits(i+1)}</td><td class="sticky-name"><input class="name-input" value="${escAttr(s.name)}" onchange="editName('${s.id}',this.value)"></td>${fields.map(f=>{let k=f[0],v=s[k]??"";let disabled=["avg1","avg2","annual"].includes(k);return `<td><input ${disabled?"readonly":""} type="text" inputmode="decimal" autocomplete="off" value="${v===""?"":arabicDigits(v)}" class="${validGrade(v)&&Number(v)<50?"low":""}" onchange="editGrade('${s.id}','${k}',this.value,this)"></td>`}).join("")}<td><textarea rows="2" onchange="editNotes('${s.id}',this.value)">${esc(s.notes||"")}</textarea></td></tr>`).join("");let sums=summaryRows(c.students);document.getElementById("gradeWrap").innerHTML=`<table><thead>${head}</thead><tbody>${rows}</tbody><tfoot>${sums}</tfoot></table>`}
 function editName(id,v){let s=findStudent(id);if(!v.trim())return alert("لا يمكن ترك الاسم فارغاً.");s.name=v.trim();sortStudents();saveDB();renderStudents()}
 function editGrade(id,k,v,input){v=latinDigits(v).trim();if(v!==""&&(isNaN(v)||Number(v)<0||Number(v)>100)){alert("الدرجة يجب أن تكون بين ٠ و ١٠٠ فقط.");input.value="";return}let s=findStudent(id);s[k]=v===""?"":Number(v);calc(s);saveDB();renderStudents()}
