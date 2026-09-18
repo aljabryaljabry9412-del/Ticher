@@ -13,6 +13,8 @@
 <link rel="apple-touch-icon" href="https://aljabryaljabry9412-del.github.io/Ticher/icon.jpeg?v=3">
 <link rel="icon" type="image/jpeg" href="https://aljabryaljabry9412-del.github.io/Ticher/icon.jpeg?v=3">
 
+<link rel="manifest" href='data:application/json,{"name":"سجل المدرس","short_name":"المدرس","start_url":"/Ticher/","display":"standalone","background_color":"#172554","theme_color":"#172554","icons":[{"src":"https://aljabryaljabry9412-del.github.io/Ticher/icon.jpeg?v=3","sizes":"192x192","type":"image/jpeg"},{"src":"https://aljabryaljabry9412-del.github.io/Ticher/icon.jpeg?v=3","sizes":"512x512","type":"image/jpeg"}]}'>
+
 <style>
 @font-face{font-family:NaskhLocal;src:local("Noto Naskh Arabic"),local("Noto Naskh Arabic UI"),local("Traditional Arabic")}
 :root{--navy:#172554;--blue:#2563eb;--bg:#f1f5f9;--card:#fff;--line:#cbd5e1;--red:#dc2626;--green:#15803d;--text:#0f172a}
@@ -113,8 +115,12 @@ function blankStage(name="المرحلة ١"){return{id:uid(),name,classes:[blan
 function defaultDB(){return{meta:{school:"",teacher:"",subject:""},stages:[blankStage()]}}
 function loadDB(){try{return JSON.parse(localStorage.getItem(KEY))||defaultDB()}catch(e){return defaultDB()}}
 function saveDB(){localStorage.setItem(KEY,JSON.stringify(db));updateHeader()}
-function currentStageObj(){return db.stages[currentStage]}
-function currentClassObj(){return currentStageObj().classes[currentClass]}
+function currentStageObj(){return db.stages[currentStage]||db.stages[0]}
+function currentClassObj(){
+  let stage=currentStageObj();
+  if(!stage.classes[currentClass]) currentClass=0;
+  return stage.classes[currentClass]||stage.classes[0];
+}
 function confirmAction(msg){return confirm(msg+"\n\nلا يمكن التراجع عن هذا الإجراء.")}
 function updateHeader(){document.getElementById("headerMeta").textContent=[db.meta.school||"اسم المدرسة",db.meta.teacher||"اسم المدرس",db.meta.subject||"اسم المادة"].join(" • ")}
 function normalizeSearchName(v){return String(v||"").trim().toLowerCase().replace(/[أإآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/[ًٌٍَُِّْـ]/g,"").replace(/\s+/g," ")}
@@ -164,7 +170,7 @@ function init(){
 function showTab(id){
   const target=document.getElementById(id);
   if(!target)return;
-  document.querySelectorAll(".wrap > section.tab").forEach(x=>x.classList.add("hidden"));
+  document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));
   target.classList.remove("hidden");
   document.querySelectorAll(".tabs button[data-tab]").forEach(b=>b.classList.remove("active"));
   const btn=document.querySelector('.tabs button[data-tab="'+id+'"]');
@@ -177,30 +183,40 @@ function showTab(id){
 
 function renderStages(){
   let el=document.getElementById("stageTabs");
+  if(!db.stages || db.stages.length === 0) db.stages = [blankStage()];
+  if(currentStage >= db.stages.length) currentStage = 0;
+  
   el.innerHTML=db.stages.map((s,i)=>`<span class="stage-item ${i===currentStage?'active-stage':''}"><button type="button" onclick="selectStage(${i})">${esc(s.name)}</button></span>`).join("");
-  selectStage(Math.min(currentStage,db.stages.length-1))
+  selectStage(currentStage);
 }
 
 function selectStage(i){
   currentStage=i;
+  if(!db.stages[currentStage]) currentStage = 0;
   document.querySelectorAll(".stage-item").forEach((el,idx)=>{
     if(idx===i)el.classList.add("active-stage");else el.classList.remove("active-stage")
   });
-  if(currentStageObj()){
-    document.getElementById("stageTitle").textContent=currentStageObj().name;
+  let stageObj = currentStageObj();
+  if(stageObj){
+    document.getElementById("stageTitle").textContent=stageObj.name;
+    if(!stageObj.classes || stageObj.classes.length === 0) stageObj.classes = [blankClass()];
+    if(currentClass >= stageObj.classes.length) currentClass = 0;
+    
     let el=document.getElementById("classTabs");
-    el.innerHTML=currentStageObj().classes.map((c,j)=>`<span class="class-item ${j===currentClass?'active-class':''}"><button type="button" onclick="selectClass(${j})">${esc(c.name)}</button></span>`).join("");
-    selectClass(Math.min(currentClass,currentStageObj().classes.length-1))
+    el.innerHTML=stageObj.classes.map((c,j)=>`<span class="class-item ${j===currentClass?'active-class':''}"><button type="button" onclick="selectClass(${j})">${esc(c.name)}</button></span>`).join("");
+    selectClass(currentClass);
   }
 }
 
 function selectClass(i){
   currentClass=i;
-  document.querySelectorAll(".class-item").forEach((el,idx)=>{
-    if(idx===i)el.classList.add("active-class");else el.classList.remove("active-class")
-  });
-  if(currentStageObj()){
-    document.getElementById("stageTitle").textContent=currentStageObj().name;
+  let stageObj = currentStageObj();
+  if(stageObj && stageObj.classes){
+    if(currentClass >= stageObj.classes.length) currentClass = 0;
+    document.querySelectorAll(".class-item").forEach((el,idx)=>{
+      if(idx===i)el.classList.add("active-class");else el.classList.remove("active-class")
+    });
+    document.getElementById("stageTitle").textContent=stageObj.name;
   }
   renderStudents();
   resetDaily();
@@ -311,7 +327,12 @@ function blankStudent(name){
   return s;
 }
 
-function sortStudents(){currentClassObj().students.sort((a,b)=>a.name.localeCompare(b.name,"ar"))}
+function sortStudents(){
+  let cls = currentClassObj();
+  if(cls && cls.students) {
+    cls.students.sort((a,b)=>a.name.localeCompare(b.name,"ar"));
+  }
+}
 
 function addStudent(){
   let n=prompt("اسم الطالب:");
@@ -353,6 +374,7 @@ function calc(s){
 
 function renderStudents(){
   let c=currentClassObj();
+  if(!c) return;
   sortStudents();
   document.getElementById("studentsTitle").textContent=`${c.name} — ${c.students.length?arabicDigits(c.students.length):"٠"} طالب`;
   c.students.forEach(calc);
@@ -401,12 +423,11 @@ function printGrades(mode){let cols=mode==="summary"?["name","avg1","mid","avg2"
 function openPrintColumns(){let el=document.getElementById("columnChecks");el.innerHTML=`<label><input type="checkbox" data-col="name" checked disabled> اسم الطالب</label><br>`+fields.map(f=>`<label><input type="checkbox" data-col="${f[0]}" checked> ${f[1]}</label><br>`).join("");document.getElementById("printColumnsModal").classList.remove("hidden")}
 function printCustom(){let cols=[...document.querySelectorAll("#columnChecks input:checked")].map(x=>x.dataset.col);closeModal("printColumnsModal");buildPrintGrades(cols)}
 function buildPrintGrades(cols){let c=currentClassObj();let title=`${db.meta.school||""} — ${db.meta.teacher||""} — ${db.meta.subject||""} — ${currentStageObj().name} — ${c.name}`;let labels={name:"اسم الطالب"};fields.forEach(f=>labels[f[0]]=f[1]);let html=`<h2 style="text-align:center">${esc(title)}</h2><table><thead><tr>${cols.map(k=>`<th>${labels[k]}</th>`).join("")}</tr></thead><tbody>${c.students.map((s,i)=>{calc(s);return `<tr>${cols.map(k=>`<td>${k==="name"?esc(s.name):arabicDigits(s[k]??"")}</td>`).join("")}</tr>`}).join("")}</tbody></table>`;document.getElementById("printArea").innerHTML=html;window.print()}
-function printAbsence(kind){let date=document.getElementById("absenceDate").value,c=currentClassObj(),rec=c.attendance[date];if(!rec)return alert("لا يوجد سجل لهذا التاريخ.");let names=id=>c.students.find(s=>s.id===id)?.name||"";let arr=rec.results.filter(x=>kind==="all"||kind===(x.present?"present":"absent")),photos=c.photos[date]||[];let html=`<h2 style="text-align:center">${esc(db.meta.school||"")} — ${esc(db.meta.teacher||"")} — ${esc(db.meta.subject||"")}</h2><h3 style="text-align:center">${esc(currentStageObj().name)} — ${esc(c.name)} — ${formatDate(new Date(rec.date))}</h3><table><thead><tr><th>الاسم</th><th>الحالة</th><th>الوقت</th></tr></thead><tbody>${arr.map(x=>`<tr><td>${esc(names(x.id))}</td><td>${x.present?"حاضر":"غائب"}</td><td>${formatDateTime(new Date(x.time))}</td></tr>`).join("")}</tbody></table>${photos.length?`<h3>الصور</h3><div>${photos.map(x=>`<img src="${x}" style="max-width:45%;max-height:220px;margin:5px">`).join("")}</div>`:""}`;document.getElementById("printArea").innerHTML=html;window.print()}
+function printAbsence(kind){let date=document.getElementById("absenceDate").value,c=currentClassObj(),rec=c.attendance[date];if(!rec)return alert("لا يوجد سجل لهذا التاريخ.");let names=id=>c.students.find(s=>s.id===id)?.name||"";let arr=rec.results.filter(x=>kind==="all"||kind===(x.present?"present":"absent")),photos=c.photos[date]||[];let html=`<h2 style="text-align:center">${esc(db.meta.school||""} — ${esc(db.meta.teacher||"")} — ${esc(db.meta.subject||"")}</h2><h3 style="text-align:center">${esc(currentStageObj().name)} — ${esc(c.name)} — ${formatDate(new Date(rec.date))}</h3><table><thead><tr><th>الاسم</th><th>الحالة</th><th>الوقت</th></tr></thead><tbody>${arr.map(x=>`<tr><td>${esc(names(x.id))}</td><td>${x.present?"حاضر":"غائب"}</td><td>${formatDateTime(new Date(x.time))}</td></tr>`).join("")}</tbody></table>${photos.length?`<h3>الصور</h3><div>${photos.map(x=>`<img src="${x}" style="max-width:45%;max-height:220px;margin:5px">`).join("")}</div>`:""}`;document.getElementById("printArea").innerHTML=html;window.print()}
 
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&quot;","'":"&#39;"}[m]))}
 function escAttr(s){return esc(s).replace(/"/g,"&quot;")}
 
-// تشغيل التهيئة الصحيحة للتبويبات والأقسام
 init();
 document.getElementById("nameModalInput").addEventListener("keydown",e=>{e.key==="Enter"&&submitNameModal();e.key==="Escape"&&closeModal("nameModal")});
 </script>
